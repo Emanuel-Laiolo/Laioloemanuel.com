@@ -630,7 +630,7 @@ function ExperienceFlowInner() {
             <div className="flex items-center gap-2" />
           </div>
 
-          <div className="experience-stage relative h-[34rem] w-full overflow-hidden bg-[#111318] sm:h-[48rem] lg:h-[58rem]">
+          <div className="experience-stage relative h-[36rem] w-full overflow-hidden bg-[#111318] sm:h-[48rem] lg:h-[58rem]">
             <div className="experience-scene absolute inset-0">
             <ReactFlow<FlowNode, FlowEdge>
               nodes={nodes}
@@ -846,28 +846,28 @@ function ExperienceFlowInner() {
       <style jsx>{`
         @media (max-width: 639px) {
           .experience-stage {
-            height: 31rem;
+            height: 33rem;
           }
 
           .experience-scene {
-            transform: scale(0.74);
+            transform: scale(0.7);
             transform-origin: top center;
-            width: 132%;
-            left: -16%;
+            width: 138%;
+            left: -19%;
             top: 0;
           }
         }
 
         @media (min-width: 640px) and (max-width: 1023px) {
           .experience-stage {
-            height: 44rem;
+            height: 45rem;
           }
 
           .experience-scene {
-            transform: scale(0.9);
+            transform: scale(0.88);
             transform-origin: top center;
-            width: 112%;
-            left: -6%;
+            width: 116%;
+            left: -8%;
             top: 0;
           }
         }

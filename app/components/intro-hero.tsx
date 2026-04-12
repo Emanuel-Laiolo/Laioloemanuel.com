@@ -236,10 +236,11 @@ export function IntroHero() {
     <section
       ref={rootRef}
       id="hero"
-      className="flex min-h-[100svh] scroll-mt-28 items-center overflow-hidden border-b border-[var(--border)] py-12 sm:py-20"
+      className="flex min-h-[100svh] scroll-mt-28 items-center overflow-x-clip border-b border-[var(--border)] py-12 sm:py-20"
     >
       <div className="mx-auto flex w-full max-w-[76rem] items-center justify-center px-4 sm:px-10 lg:px-0">
-        <div className="hero-scene grid w-full origin-top items-center gap-10 sm:gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(30rem,36rem)] xl:grid-cols-[minmax(0,1fr)_minmax(34rem,40rem)] xl:gap-10">
+        <div className="hero-scene-frame w-full">
+        <div className="hero-scene grid w-full items-center gap-10 sm:gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(30rem,36rem)] xl:grid-cols-[minmax(0,1fr)_minmax(34rem,40rem)] xl:gap-10">
           <div className="max-w-[42rem] space-y-8 lg:space-y-10">
             <p
               ref={roleRef}
@@ -382,26 +383,38 @@ export function IntroHero() {
             </div>
           </div>
         </div>
+        </div>
       </div>
       <style jsx>{`
+        .hero-scene-frame {
+          overflow: visible;
+        }
+
         @media (max-width: 639px) {
+          .hero-scene-frame {
+            height: 58rem;
+          }
+
           .hero-scene {
-            transform: scale(0.78);
+            transform: scale(0.76);
             transform-origin: top center;
-            width: 128%;
-            margin-left: -14%;
-            margin-top: 0.5rem;
-            margin-bottom: -4.75rem;
+            width: 132%;
+            margin-left: -16%;
+            margin-top: 0.25rem;
           }
         }
 
         @media (min-width: 640px) and (max-width: 1023px) {
+          .hero-scene-frame {
+            height: 54rem;
+          }
+
           .hero-scene {
-            transform: scale(0.92);
+            transform: scale(0.9);
             transform-origin: top center;
-            width: 108%;
-            margin-left: -4%;
-            margin-bottom: -1.5rem;
+            width: 112%;
+            margin-left: -6%;
+            margin-top: 0.25rem;
           }
         }
       `}</style>

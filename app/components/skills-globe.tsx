@@ -903,9 +903,10 @@ export function SkillsGlobe() {
         </h2>
       </div>
 
+      <div className="globe-stage-frame relative mx-auto w-full max-w-[54rem]">
       <div
         ref={stageRef}
-        className="globe-stage relative mx-auto flex h-[33rem] w-full max-w-[54rem] cursor-grab items-center justify-center overflow-visible sm:h-[34rem] lg:h-[38rem] active:cursor-grabbing"
+        className="globe-stage relative flex h-[33rem] w-full cursor-grab items-center justify-center overflow-visible sm:h-[34rem] lg:h-[38rem] active:cursor-grabbing"
       >
         <div
           className="globe-core-outer pointer-events-none absolute h-[24rem] w-[24rem] rounded-full sm:h-[24rem] sm:w-[24rem] lg:h-[29rem] lg:w-[29rem]"
@@ -928,13 +929,14 @@ export function SkillsGlobe() {
         />
 
         <div className="globe-ring-outer pointer-events-none absolute h-[24rem] w-[24rem] rounded-full border border-[#6c78ff]/12 sm:h-[24rem] sm:w-[24rem] lg:h-[29rem] lg:w-[29rem]" />
-        <div className="globe-ring-inner pointer-events-none absolute h-[15rem] w-[24rem] rounded-full border border-[#8890ff]/12 opacity-40 [transform:rotateX(74deg)] sm:h-[15rem] sm:w-[24rem] lg:h-[18rem] lg:w-[29rem]" />
+        <div className="globe-ring-inner pointer-events-none absolute h-[15rem] w-[24rem] rounded-full border border-[#8890ff]/12 opacity-40 sm:h-[15rem] sm:w-[24rem] lg:h-[18rem] lg:w-[29rem]" />
 
         <div className="globe-scene absolute left-1/2 top-1/2 h-[38rem] w-[54rem] -translate-x-1/2 -translate-y-1/2 sm:h-full sm:w-full">
           <GlobeOverlay overlay={overlay} edges={lattice.edges} speed={speed} />
         </div>
 
         <div className="pointer-events-none absolute bottom-0 left-1/2 h-px w-[14rem] -translate-x-1/2 bg-gradient-to-r from-transparent via-white/16 to-transparent" />
+      </div>
       </div>
 
       <div className="mx-auto mt-6 max-w-[30rem] px-1 sm:mt-8">
@@ -996,34 +998,38 @@ export function SkillsGlobe() {
           }
         }
 
+        .globe-ring-inner {
+          transform: rotateX(74deg);
+        }
+
         @media (max-width: 639px) {
+          .globe-stage-frame {
+            height: 31rem;
+            overflow: visible;
+          }
+
           .globe-stage {
-            height: 29rem;
+            height: 31rem;
           }
 
           .globe-scene {
-            transform: translate(-50%, -50%) scale(0.7);
+            transform: translate(-50%, -50%) scale(0.66);
             transform-origin: center center;
-          }
-
-          .globe-core-outer,
-          .globe-ring-outer {
-            transform: scale(1.08);
-          }
-
-          .globe-core-inner,
-          .globe-ring-inner {
-            transform: scale(1.06);
           }
         }
 
         @media (min-width: 640px) and (max-width: 1023px) {
+          .globe-stage-frame {
+            height: 35rem;
+            overflow: visible;
+          }
+
           .globe-stage {
-            height: 33rem;
+            height: 35rem;
           }
 
           .globe-scene {
-            transform: translate(-50%, -50%) scale(0.84);
+            transform: translate(-50%, -50%) scale(0.82);
             transform-origin: center center;
           }
         }
