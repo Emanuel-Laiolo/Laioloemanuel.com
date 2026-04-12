@@ -630,7 +630,8 @@ function ExperienceFlowInner() {
             <div className="flex items-center gap-2" />
           </div>
 
-          <div className="relative h-[42rem] w-full bg-[#111318] sm:h-[50rem] lg:h-[58rem]">
+          <div className="experience-stage relative h-[34rem] w-full overflow-hidden bg-[#111318] sm:h-[48rem] lg:h-[58rem]">
+            <div className="experience-scene absolute inset-0">
             <ReactFlow<FlowNode, FlowEdge>
               nodes={nodes}
               edges={visibleEdges}
@@ -690,7 +691,7 @@ function ExperienceFlowInner() {
                 showInteractive={false}
               />
               <Panel position="top-left">
-                <div className="w-[min(48vw,14rem)] rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-3 py-2.5 text-xs leading-5 text-white/62 backdrop-blur-xl sm:w-[min(100%,26rem)] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
+                <div className="w-[min(52vw,16rem)] rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-3 py-2.5 text-xs leading-5 text-white/62 backdrop-blur-xl sm:w-[min(100%,26rem)] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
                   Select a node to reveal its information. You can also move nodes, create connections, duplicate items, or reset the canvas from the panel on the right.
                 </div>
               </Panel>
@@ -698,7 +699,7 @@ function ExperienceFlowInner() {
               {isEditMode ? (
                 <>
                   <Panel position="top-right">
-                    <div className="flex w-[11.5rem] flex-col gap-2 rounded-[1rem] border border-white/[0.08] bg-[rgba(15,17,23,0.88)] p-3 backdrop-blur-xl sm:w-[17.5rem] sm:p-4">
+                    <div className="flex w-[12.75rem] flex-col gap-2 rounded-[1rem] border border-white/[0.08] bg-[rgba(15,17,23,0.88)] p-3 backdrop-blur-xl sm:w-[17.5rem] sm:p-4">
                       <button
                         type="button"
                         onClick={() => {
@@ -753,7 +754,7 @@ function ExperienceFlowInner() {
 
                   {isCreatorOpen ? (
                     <Panel position="top-right">
-                      <div className="mt-32 w-[11.5rem] rounded-[1.15rem] border border-white/[0.08] bg-[rgba(15,17,23,0.92)] p-3 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:mt-44 sm:w-[20rem] sm:p-4">
+                      <div className="mt-32 w-[13rem] rounded-[1.15rem] border border-white/[0.08] bg-[rgba(15,17,23,0.92)] p-3 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:mt-44 sm:w-[20rem] sm:p-4">
                         <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/36">Node Creator</p>
                         <div className="mt-4 space-y-3">
                           <Field label="Name" value={newNodeName} onChange={setNewNodeName} />
@@ -783,7 +784,7 @@ function ExperienceFlowInner() {
 
               {selectedNode && isEditorOpen ? (
                 <Panel position="bottom-center">
-                  <div className="mb-4 w-[min(94vw,52rem)] rounded-[1.25rem] border border-white/[0.08] bg-[rgba(14,16,24,0.92)] p-3 text-white/84 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-4">
+                  <div className="mb-4 w-[min(96vw,52rem)] rounded-[1.25rem] border border-white/[0.08] bg-[rgba(14,16,24,0.92)] p-3 text-white/84 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-4">
                     <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] pb-4">
                       <div>
                         <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/34">
@@ -838,9 +839,39 @@ function ExperienceFlowInner() {
                 </Panel>
               ) : null}
             </ReactFlow>
+            </div>
           </div>
         </div>
       </div>
+      <style jsx>{`
+        @media (max-width: 639px) {
+          .experience-stage {
+            height: 31rem;
+          }
+
+          .experience-scene {
+            transform: scale(0.74);
+            transform-origin: top center;
+            width: 132%;
+            left: -16%;
+            top: 0;
+          }
+        }
+
+        @media (min-width: 640px) and (max-width: 1023px) {
+          .experience-stage {
+            height: 44rem;
+          }
+
+          .experience-scene {
+            transform: scale(0.9);
+            transform-origin: top center;
+            width: 112%;
+            left: -6%;
+            top: 0;
+          }
+        }
+      `}</style>
     </section>
   );
 }
