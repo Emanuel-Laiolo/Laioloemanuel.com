@@ -107,11 +107,11 @@ export function SiteNavbar({
 
   return (
     <header className="sticky top-0 z-30">
-      <div className="flex justify-center px-6 pt-5 sm:px-10 lg:px-16">
+      <div className="flex justify-center px-4 pt-4 sm:px-10 lg:px-16">
         <nav
           ref={navRef}
           aria-label="Primary"
-          className="site-nav relative hidden items-center gap-1 rounded-full px-2 py-2 md:inline-flex"
+          className="site-nav relative inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-full px-2 py-2 md:inline-flex"
         >
           {navSize.width > 0 && (
             <svg

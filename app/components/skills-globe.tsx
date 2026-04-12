@@ -898,17 +898,17 @@ export function SkillsGlobe() {
           TECH STACK
         </p>
 
-        <h2 className="text-5xl font-semibold tracking-[-0.05em] text-white md:text-6xl">
+        <h2 className="text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl md:text-6xl">
           My Skills
         </h2>
       </div>
 
       <div
         ref={stageRef}
-        className="relative mx-auto flex h-[38rem] w-full max-w-[54rem] cursor-grab items-center justify-center overflow-hidden active:cursor-grabbing"
+        className="relative mx-auto flex h-[28rem] w-full max-w-[54rem] cursor-grab items-center justify-center overflow-hidden sm:h-[34rem] lg:h-[38rem] active:cursor-grabbing"
       >
         <div
-          className="pointer-events-none absolute h-[29rem] w-[29rem] rounded-full"
+          className="pointer-events-none absolute h-[18rem] w-[18rem] rounded-full sm:h-[24rem] sm:w-[24rem] lg:h-[29rem] lg:w-[29rem]"
           style={{
             background: `radial-gradient(circle, rgba(130,145,255,${0.05 + highEnergyRatio * 0.08}) 0%, rgba(90,122,255,${0.03 + highEnergyRatio * 0.06}) 34%, rgba(0,0,0,0) 72%)`,
             filter: `blur(${20 + highEnergyRatio * 14}px)`,
@@ -918,7 +918,7 @@ export function SkillsGlobe() {
         />
 
         <div
-          className="pointer-events-none absolute h-[17rem] w-[17rem] rounded-full"
+          className="pointer-events-none absolute h-[11rem] w-[11rem] rounded-full sm:h-[14rem] sm:w-[14rem] lg:h-[17rem] lg:w-[17rem]"
           style={{
             background: `radial-gradient(circle, rgba(255,255,255,${0.02 + highEnergyRatio * 0.05}) 0%, rgba(153,211,255,${0.04 + highEnergyRatio * 0.08}) 30%, rgba(79,118,255,0) 72%)`,
             filter: `blur(${18 + highEnergyRatio * 18}px)`,
@@ -927,15 +927,15 @@ export function SkillsGlobe() {
           }}
         />
 
-        <div className="pointer-events-none absolute h-[29rem] w-[29rem] rounded-full border border-[#6c78ff]/12" />
-        <div className="pointer-events-none absolute h-[18rem] w-[29rem] rounded-full border border-[#8890ff]/12 opacity-40 [transform:rotateX(74deg)]" />
+        <div className="pointer-events-none absolute h-[18rem] w-[18rem] rounded-full border border-[#6c78ff]/12 sm:h-[24rem] sm:w-[24rem] lg:h-[29rem] lg:w-[29rem]" />
+        <div className="pointer-events-none absolute h-[11rem] w-[18rem] rounded-full border border-[#8890ff]/12 opacity-40 [transform:rotateX(74deg)] sm:h-[15rem] sm:w-[24rem] lg:h-[18rem] lg:w-[29rem]" />
 
         <GlobeOverlay overlay={overlay} edges={lattice.edges} speed={speed} />
 
         <div className="pointer-events-none absolute bottom-0 left-1/2 h-px w-[14rem] -translate-x-1/2 bg-gradient-to-r from-transparent via-white/16 to-transparent" />
       </div>
 
-      <div className="mx-auto mt-8 max-w-[30rem]">
+      <div className="mx-auto mt-6 max-w-[30rem] px-1 sm:mt-8">
         <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-[0.28em] text-white/42">
           <span>Speed</span>
           <span className="text-white/65">{speed.toFixed(0)}</span>
@@ -956,18 +956,18 @@ export function SkillsGlobe() {
         </div>
       </div>
 
-      <div className="relative mt-8 overflow-hidden rounded-full border border-white/[0.08] bg-white/[0.03] py-3.5 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+      <div className="relative mt-6 overflow-hidden rounded-full border border-white/[0.08] bg-white/[0.03] py-3 shadow-[0_10px_30px_rgba(0,0,0,0.18)] sm:mt-8 sm:py-3.5">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[rgba(4,5,8,0.98)] via-[rgba(4,5,8,0.75)] to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[rgba(4,5,8,0.98)] via-[rgba(4,5,8,0.75)] to-transparent" />
 
-        <div className="marquee-track flex w-max items-center gap-4 whitespace-nowrap px-4">
+        <div className="marquee-track flex w-max items-center gap-3 whitespace-nowrap px-4 sm:gap-4">
           {[...RAW_SKILLS, ...RAW_SKILLS].map((skill, index) => (
             <div
               key={`bottom-${skill.label}-${index}`}
-              className="flex items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-sm text-white/62 transition hover:border-white/[0.14] hover:text-white/82"
+              className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs text-white/68 transition hover:border-white/[0.14] hover:text-white/82 sm:gap-2.5 sm:px-4 sm:py-2 sm:text-sm"
             >
               <span
-                className="flex h-6 w-6 items-center justify-center rounded-full text-[0.6rem] font-semibold tracking-[0.12em] text-white"
+                className="flex h-5 w-5 items-center justify-center rounded-full text-[0.55rem] font-semibold tracking-[0.12em] text-white sm:h-6 sm:w-6 sm:text-[0.6rem]"
                 style={{
                   background: `${skill.color}22`,
                 }}

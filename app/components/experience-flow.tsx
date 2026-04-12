@@ -594,7 +594,7 @@ function ExperienceFlowInner() {
   return (
     <section
       id="projects"
-      className="scroll-mt-28 border-b border-[var(--border)] py-24 sm:py-32 lg:py-40"
+      className="scroll-mt-28 border-b border-[var(--border)] py-20 sm:py-32 lg:py-40"
     >
       <style jsx global>{`
         #projects .react-flow__renderer svg,
@@ -606,14 +606,14 @@ function ExperienceFlowInner() {
       `}</style>
 
       <div className="space-y-10 lg:space-y-14">
-        <div className="mx-auto max-w-4xl space-y-4 text-center">
+        <div className="mx-auto max-w-4xl space-y-4 px-1 text-center">
           <p className="text-[0.72rem] font-medium uppercase tracking-[0.34em] text-[var(--foreground-subtle)]">
             Experience Flow
           </p>
-          <h2 className="text-3xl font-semibold tracking-[-0.045em] text-[var(--foreground)] sm:text-4xl lg:text-[2.9rem]">
+          <h2 className="text-[2rem] font-semibold tracking-[-0.045em] text-[var(--foreground)] sm:text-4xl lg:text-[2.9rem]">
             A living map of my work, built by me.
           </h2>
-          <p className="mx-auto max-w-3xl text-base leading-8 text-[var(--foreground-muted)] sm:text-lg">
+          <p className="mx-auto max-w-3xl text-[0.98rem] leading-7 text-[var(--foreground-muted)] sm:text-lg sm:leading-8">
             I built this interactive canvas to show how my projects, skills, and technical foundations connect over time. You can move nodes, inspect links, and explore the structure freely — while the original composition stays intentional and curated.
           </p>
         </div>
@@ -630,7 +630,7 @@ function ExperienceFlowInner() {
             <div className="flex items-center gap-2" />
           </div>
 
-          <div className="relative h-[58rem] w-full bg-[#111318]">
+          <div className="relative h-[42rem] w-full bg-[#111318] sm:h-[50rem] lg:h-[58rem]">
             <ReactFlow<FlowNode, FlowEdge>
               nodes={nodes}
               edges={visibleEdges}
@@ -690,7 +690,7 @@ function ExperienceFlowInner() {
                 showInteractive={false}
               />
               <Panel position="top-left">
-                <div className="w-[min(100%,26rem)] rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-4 py-3 text-sm leading-6 text-white/62 backdrop-blur-xl">
+                <div className="w-[min(48vw,14rem)] rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-3 py-2.5 text-xs leading-5 text-white/62 backdrop-blur-xl sm:w-[min(100%,26rem)] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
                   Select a node to reveal its information. You can also move nodes, create connections, duplicate items, or reset the canvas from the panel on the right.
                 </div>
               </Panel>
@@ -698,7 +698,7 @@ function ExperienceFlowInner() {
               {isEditMode ? (
                 <>
                   <Panel position="top-right">
-                    <div className="flex w-[17.5rem] flex-col gap-2 rounded-[1rem] border border-white/[0.08] bg-[rgba(15,17,23,0.88)] p-4 backdrop-blur-xl">
+                    <div className="flex w-[11.5rem] flex-col gap-2 rounded-[1rem] border border-white/[0.08] bg-[rgba(15,17,23,0.88)] p-3 backdrop-blur-xl sm:w-[17.5rem] sm:p-4">
                       <button
                         type="button"
                         onClick={() => {
@@ -753,7 +753,7 @@ function ExperienceFlowInner() {
 
                   {isCreatorOpen ? (
                     <Panel position="top-right">
-                      <div className="mt-44 w-[20rem] rounded-[1.15rem] border border-white/[0.08] bg-[rgba(15,17,23,0.92)] p-4 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+                      <div className="mt-32 w-[11.5rem] rounded-[1.15rem] border border-white/[0.08] bg-[rgba(15,17,23,0.92)] p-3 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:mt-44 sm:w-[20rem] sm:p-4">
                         <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/36">Node Creator</p>
                         <div className="mt-4 space-y-3">
                           <Field label="Name" value={newNodeName} onChange={setNewNodeName} />
@@ -783,7 +783,7 @@ function ExperienceFlowInner() {
 
               {selectedNode && isEditorOpen ? (
                 <Panel position="bottom-center">
-                  <div className="mb-4 w-[min(92vw,52rem)] rounded-[1.25rem] border border-white/[0.08] bg-[rgba(14,16,24,0.92)] p-4 text-white/84 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+                  <div className="mb-4 w-[min(94vw,52rem)] rounded-[1.25rem] border border-white/[0.08] bg-[rgba(14,16,24,0.92)] p-3 text-white/84 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-4">
                     <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] pb-4">
                       <div>
                         <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/34">

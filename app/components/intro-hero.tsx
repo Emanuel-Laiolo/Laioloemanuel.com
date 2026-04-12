@@ -236,11 +236,11 @@ export function IntroHero() {
     <section
       ref={rootRef}
       id="hero"
-      className="flex min-h-[100svh] scroll-mt-28 items-center overflow-hidden border-b border-[var(--border)] py-20"
+      className="flex min-h-[100svh] scroll-mt-28 items-center overflow-hidden border-b border-[var(--border)] py-14 sm:py-20"
     >
-      <div className="mx-auto flex w-full max-w-[76rem] items-center justify-center px-6 sm:px-10 lg:px-0">
-        <div className="grid w-full items-center gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(30rem,36rem)] xl:grid-cols-[minmax(0,1fr)_minmax(34rem,40rem)] xl:gap-10">
-          <div className="max-w-[42rem] space-y-10">
+      <div className="mx-auto flex w-full max-w-[76rem] items-center justify-center px-5 sm:px-10 lg:px-0">
+        <div className="grid w-full items-center gap-10 sm:gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(30rem,36rem)] xl:grid-cols-[minmax(0,1fr)_minmax(34rem,40rem)] xl:gap-10">
+          <div className="order-2 max-w-[42rem] space-y-8 lg:order-1 lg:space-y-10">
             <p
               ref={roleRef}
               className="text-[0.72rem] font-medium uppercase tracking-[0.38em] text-[var(--foreground-soft)]"
@@ -251,7 +251,7 @@ export function IntroHero() {
             <div className="space-y-6">
               <h1
                 aria-label="Emanuel Laiolo"
-                className="text-[4rem] font-semibold leading-[0.9] tracking-[-0.09em] text-[var(--foreground)] sm:text-[5.2rem] lg:text-[6.4rem]"
+                className="text-[3.15rem] font-semibold leading-[0.92] tracking-[-0.09em] text-[var(--foreground)] sm:text-[5.2rem] lg:text-[6.4rem]"
               >
                 <span className="block">
                   {firstNameLetters.map((item, index) => (
@@ -286,7 +286,7 @@ export function IntroHero() {
 
               <p
                 ref={statementRef}
-                className="max-w-[39rem] text-xl leading-8 tracking-[-0.025em] text-[var(--foreground)]/92 sm:text-[1.7rem] sm:leading-10"
+                className="max-w-[39rem] text-[1.05rem] leading-7 tracking-[-0.025em] text-[var(--foreground)]/92 sm:text-[1.7rem] sm:leading-10"
               >
                 Building clean web products, practical tools, and modern digital
                 experiences.
@@ -294,7 +294,7 @@ export function IntroHero() {
 
               <p
                 ref={paragraphRef}
-                className="max-w-[35rem] text-base leading-8 text-[var(--foreground-muted)] sm:text-lg"
+                className="max-w-[35rem] text-[0.98rem] leading-7 text-[var(--foreground-muted)] sm:text-lg"
               >
                 Programming Technician from UTN, based in Krakow, with
                 experience across web development, e-commerce, and software
@@ -316,7 +316,7 @@ export function IntroHero() {
               ))}
             </ul>
 
-            <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center">
               <a
                 ref={(node) => {
                   ctaRef.current[0] = node;
@@ -340,7 +340,7 @@ export function IntroHero() {
             </div>
           </div>
 
-          <div className="relative mx-auto flex h-[40rem] w-full max-w-[36rem] items-end justify-center lg:mx-0 lg:ml-auto xl:h-[45rem] xl:max-w-[40rem]">
+          <div className="relative order-1 mx-auto flex h-[28rem] w-full max-w-[20rem] items-end justify-center sm:h-[34rem] sm:max-w-[26rem] lg:order-2 lg:mx-0 lg:ml-auto lg:h-[40rem] lg:max-w-[36rem] xl:h-[45rem] xl:max-w-[40rem]">
             <div
               ref={visualRef}
               className="relative h-full w-full will-change-transform"
@@ -376,7 +376,7 @@ export function IntroHero() {
                   height={1220}
                   priority
                   sizes="(min-width: 1280px) 36rem, (min-width: 1024px) 32rem, 72vw"
-                  className="relative z-10 h-auto max-h-[39rem] w-auto max-w-none object-contain drop-shadow-[0_18px_40px_rgba(0,0,0,0.35)] xl:max-h-[43rem]"
+                  className="relative z-10 h-auto max-h-[24rem] w-auto max-w-none object-contain drop-shadow-[0_18px_40px_rgba(0,0,0,0.35)] sm:max-h-[32rem] xl:max-h-[43rem]"
                 />
               </div>
             </div>
