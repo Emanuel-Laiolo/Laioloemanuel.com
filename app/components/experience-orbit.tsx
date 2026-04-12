@@ -203,7 +203,8 @@ const EXPERIENCE_ITEMS: ExperienceItem[] = [
       "Worked around code, features, and technical product logic.",
       "Bridged user needs with complex software behaviour.",
     ],
-    result: "A strong base in technical product understanding and decision-heavy software.",
+    result:
+      "A strong base in technical product understanding and decision-heavy software.",
     orbit: 2,
     speed: 0.11,
     initialAngle: 208,
@@ -244,7 +245,8 @@ const EXPERIENCE_ITEMS: ExperienceItem[] = [
       "Worked with risk models, EV logic, and quantitative reasoning.",
       "Contributed to bankroll, stats, range, and solver-oriented tools.",
     ],
-    result: "Early exposure to building software for complex, quantitative problems.",
+    result:
+      "Early exposure to building software for complex, quantitative problems.",
     orbit: 3,
     speed: -0.07,
     initialAngle: 272,
@@ -289,7 +291,8 @@ const EXPERIENCE_ITEMS: ExperienceItem[] = [
       "Focus on fundamentals rather than shallow tooling.",
       "A deliberate base for long-term technical growth.",
     ],
-    result: "A more durable technical foundation for the next stage of growth.",
+    result:
+      "A more durable technical foundation for the next stage of growth.",
     orbit: 1,
     speed: -0.14,
     initialAngle: 314,
@@ -301,6 +304,9 @@ const ORBIT_RADII = {
   2: { x: 225, y: 156 },
   3: { x: 300, y: 206 },
 } as const;
+
+const ORBIT_SCENE_WIDTH = 860;
+const ORBIT_SCENE_HEIGHT = 700;
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
@@ -338,7 +344,8 @@ function applyOrbitSpacing(rawAngles: Record<string, number>) {
         const nextItem = orbitItems[(i + 1) % orbitItems.length];
         const currentAngle = normalizeAngle(current.angle);
         const nextAngleRaw = normalizeAngle(nextItem.angle);
-        const nextAngle = i === orbitItems.length - 1 ? nextAngleRaw + 360 : nextAngleRaw;
+        const nextAngle =
+          i === orbitItems.length - 1 ? nextAngleRaw + 360 : nextAngleRaw;
         const gap = nextAngle - currentAngle;
 
         if (gap < minGap) {
@@ -392,7 +399,9 @@ function OrbitalNode({
         <span
           className="absolute left-1/2 top-1/2 -z-10 h-24 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl transition duration-500"
           style={{
-            background: `radial-gradient(circle, ${item.accent}${active ? "72" : "26"} 0%, ${item.accent}${active ? "22" : "08"} 56%, transparent 80%)`,
+            background: `radial-gradient(circle, ${item.accent}${
+              active ? "72" : "26"
+            } 0%, ${item.accent}${active ? "22" : "08"} 56%, transparent 80%)`,
             opacity: active ? 1 : 0.45,
           }}
         />
@@ -417,7 +426,9 @@ function OrbitalNode({
             {item.shortTitle}
           </span>
 
-          <span className="mt-1 block text-[0.7rem] text-white/38">{item.period}</span>
+          <span className="mt-1 block text-[0.7rem] text-white/38">
+            {item.period}
+          </span>
         </span>
       </span>
     </button>
@@ -536,11 +547,12 @@ function ExperiencePanel({ item }: { item: ExperienceItem }) {
             <p className="text-[0.68rem] uppercase tracking-[0.24em] text-white/34">
               Result
             </p>
-            <p className="mt-3 text-sm leading-6 text-white/60">{item.result}</p>
+            <p className="mt-3 text-sm leading-6 text-white/60">
+              {item.result}
+            </p>
           </div>
         </div>
       </div>
-      <style jsx>{``}</style>
     </div>
   );
 }
@@ -548,12 +560,16 @@ function ExperiencePanel({ item }: { item: ExperienceItem }) {
 export function ExperienceOrbit() {
   const [activeId, setActiveId] = useState(EXPERIENCE_ITEMS[0].id);
   const [angles, setAngles] = useState<Record<string, number>>(() =>
-    Object.fromEntries(EXPERIENCE_ITEMS.map((item) => [item.id, item.initialAngle])),
+    Object.fromEntries(
+      EXPERIENCE_ITEMS.map((item) => [item.id, item.initialAngle])
+    )
   );
 
   const activeItem = useMemo(
-    () => EXPERIENCE_ITEMS.find((item) => item.id === activeId) ?? EXPERIENCE_ITEMS[0],
-    [activeId],
+    () =>
+      EXPERIENCE_ITEMS.find((item) => item.id === activeId) ??
+      EXPERIENCE_ITEMS[0],
+    [activeId]
   );
 
   const rafRef = useRef<number | null>(null);
@@ -572,7 +588,9 @@ export function ExperienceOrbit() {
         const next = { ...current };
 
         for (const item of EXPERIENCE_ITEMS) {
-          next[item.id] = normalizeAngle(next[item.id] + item.speed * delta * 60);
+          next[item.id] = normalizeAngle(
+            next[item.id] + item.speed * delta * 60
+          );
         }
 
         return applyOrbitSpacing(next);
@@ -604,54 +622,118 @@ export function ExperienceOrbit() {
             Real projects, real execution, real progression.
           </h2>
           <p className="mx-auto max-w-2xl text-base leading-8 text-[var(--foreground-muted)] sm:text-lg">
-            Explore the work, the context, and the decisions behind each stage — from foundations to shipped products.
+            Explore the work, the context, and the decisions behind each stage
+            — from foundations to shipped products.
           </p>
         </div>
 
         <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(24rem,29rem)] xl:items-center">
-          <div className="relative overflow-visible rounded-[2.2rem] border border-white/[0.08] bg-[radial-gradient(circle_at_50%_50%,rgba(146,169,255,0.08),rgba(255,255,255,0.02)_34%,rgba(255,255,255,0.01)_48%,rgba(0,0,0,0)_76%),linear-gradient(180deg,rgba(6,8,13,0.84),rgba(4,5,8,0.97))] px-6 py-8 sm:px-8 sm:py-10 lg:min-h-[46rem]">
+          <div className="orbit-stage relative overflow-hidden rounded-[2.2rem] border border-white/[0.08] bg-[radial-gradient(circle_at_50%_50%,rgba(146,169,255,0.08),rgba(255,255,255,0.02)_34%,rgba(255,255,255,0.01)_48%,rgba(0,0,0,0)_76%),linear-gradient(180deg,rgba(6,8,13,0.84),rgba(4,5,8,0.97))]">
             <div className="pointer-events-none absolute inset-0 rounded-[2.2rem] bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.03),transparent_56%)]" />
 
-            <div className="absolute left-6 top-6 z-30 rounded-[1.2rem] border border-white/[0.08] bg-white/[0.03] px-4 py-3 backdrop-blur-xl">
-              <p className="text-[0.58rem] uppercase tracking-[0.28em] text-white/38">
-                Instruction
-              </p>
-              <p className="mt-2 text-sm leading-6 text-white/56">
-                Choose a project or experience to inspect it.
-              </p>
-            </div>
+            <div className="orbit-scene-shell">
+              <div className="orbit-scene-frame">
+                <div className="orbit-instruction absolute left-6 top-6 z-30 rounded-[1.2rem] border border-white/[0.08] bg-white/[0.03] px-4 py-3 backdrop-blur-xl">
+                  <p className="text-[0.58rem] uppercase tracking-[0.28em] text-white/38">
+                    Instruction
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-white/56">
+                    Choose a project or experience to inspect it.
+                  </p>
+                </div>
 
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[12rem] w-[12rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.08]" />
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[19rem] w-[19rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.06]" />
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.04]" />
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[37rem] w-[37rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.03]" />
+                <div className="pointer-events-none absolute left-1/2 top-1/2 h-[12rem] w-[12rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.08]" />
+                <div className="pointer-events-none absolute left-1/2 top-1/2 h-[19rem] w-[19rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.06]" />
+                <div className="pointer-events-none absolute left-1/2 top-1/2 h-[28rem] w-[28rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.04]" />
+                <div className="pointer-events-none absolute left-1/2 top-1/2 h-[37rem] w-[37rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.03]" />
 
-            <div className="relative flex min-h-[40rem] items-center justify-center overflow-visible">
-              <div className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(145,175,255,0.24)_0%,rgba(145,175,255,0.12)_28%,rgba(255,255,255,0.04)_52%,rgba(0,0,0,0)_74%)] blur-xl" />
-              <div className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.12] bg-[linear-gradient(180deg,rgba(24,28,42,0.92),rgba(10,12,18,0.96))] shadow-[0_0_40px_rgba(129,157,255,0.2),inset_0_1px_0_rgba(255,255,255,0.14)]" />
-              <div className="pointer-events-none absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.08] bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.12),rgba(120,146,214,0.12)_42%,rgba(0,0,0,0.2)_100%)]">
-                <span className="text-center text-[0.58rem] font-semibold uppercase leading-[1.45] tracking-[0.34em] text-white/78">
-                  WORK
-                  <br />
-                  EXPERIENCE
-                </span>
+                <div className="relative h-full w-full overflow-visible">
+                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(145,175,255,0.24)_0%,rgba(145,175,255,0.12)_28%,rgba(255,255,255,0.04)_52%,rgba(0,0,0,0)_74%)] blur-xl" />
+                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/[0.12] bg-[linear-gradient(180deg,rgba(24,28,42,0.92),rgba(10,12,18,0.96))] shadow-[0_0_40px_rgba(129,157,255,0.2),inset_0_1px_0_rgba(255,255,255,0.14)]" />
+                  <div className="pointer-events-none absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/[0.08] bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.12),rgba(120,146,214,0.12)_42%,rgba(0,0,0,0.2)_100%)]">
+                    <span className="text-center text-[0.58rem] font-semibold uppercase leading-[1.45] tracking-[0.34em] text-white/78">
+                      WORK
+                      <br />
+                      EXPERIENCE
+                    </span>
+                  </div>
+
+                  {EXPERIENCE_ITEMS.map((item) => (
+                    <OrbitalNode
+                      key={item.id}
+                      item={item}
+                      angle={angles[item.id] ?? item.initialAngle}
+                      active={item.id === activeId}
+                      onSelect={setActiveId}
+                    />
+                  ))}
+                </div>
               </div>
-
-              {EXPERIENCE_ITEMS.map((item) => (
-                <OrbitalNode
-                  key={item.id}
-                  item={item}
-                  angle={angles[item.id] ?? item.initialAngle}
-                  active={item.id === activeId}
-                  onSelect={setActiveId}
-                />
-              ))}
             </div>
           </div>
 
           <ExperiencePanel item={activeItem} />
         </div>
       </div>
+
+      <style jsx>{`
+        .orbit-stage {
+          min-height: 0;
+        }
+
+        .orbit-scene-shell {
+          --orbit-scale: 1;
+          position: relative;
+          height: ${ORBIT_SCENE_HEIGHT}px;
+          overflow: hidden;
+        }
+
+        .orbit-scene-frame {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          width: ${ORBIT_SCENE_WIDTH}px;
+          height: ${ORBIT_SCENE_HEIGHT}px;
+          transform: translateX(-50%) scale(var(--orbit-scale));
+          transform-origin: top center;
+        }
+
+        @media (max-width: 1279px) {
+          .orbit-scene-shell {
+            --orbit-scale: 0.88;
+            height: 616px;
+          }
+        }
+
+        @media (max-width: 1023px) {
+          .orbit-scene-shell {
+            --orbit-scale: 0.72;
+            height: 504px;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .orbit-stage {
+            border-radius: 1.6rem;
+          }
+
+          .orbit-scene-shell {
+            --orbit-scale: 0.56;
+            height: 392px;
+          }
+        }
+
+        @media (max-width: 479px) {
+          .orbit-stage {
+            border-radius: 1.35rem;
+          }
+
+          .orbit-scene-shell {
+            --orbit-scale: 0.42;
+            height: 294px;
+          }
+        }
+      `}</style>
     </section>
   );
 }

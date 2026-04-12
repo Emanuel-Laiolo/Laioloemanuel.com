@@ -45,7 +45,7 @@ export function BackgroundEnvironment() {
     stars.map((star, index) => (
       <span
         key={`${prefix}-${index}`}
-        className={`absolute rounded-full bg-white ${extraClassName}`}
+        className={`star absolute rounded-full bg-white ${extraClassName}`}
         style={{
           left: `${star.left}%`,
           top: `${star.top}%`,
@@ -62,28 +62,37 @@ export function BackgroundEnvironment() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
-      <div className="space-base" />
-      <div className="space-accent space-accent-left" />
-      <div className="space-accent space-accent-right" />
-      <div className="space-vignette" />
+      <div className="background-shell">
+        <div className="space-base" />
+        <div className="space-accent space-accent-left" />
+        <div className="space-accent space-accent-right" />
+        <div className="space-vignette" />
 
-      <div className="absolute inset-0">
-        {renderStars(starsFar, "far", 0, 0.82, 0.8)}
-      </div>
+        <div className="absolute inset-0">
+          {renderStars(starsFar, "far", 0, 0.82, 0.8)}
+        </div>
 
-      <div className="absolute inset-0">
-        {renderStars(starsMid, "mid", 0.15, 0.95, 0.3)}
-      </div>
+        <div className="absolute inset-0">
+          {renderStars(starsMid, "mid", 0.15, 0.95, 0.3)}
+        </div>
 
-      <div className="absolute inset-0 opacity-90">
-        {renderStars(starsNear, "near", 0.35, 1.06, 0)}
-      </div>
+        <div className="absolute inset-0 opacity-90">
+          {renderStars(starsNear, "near", 0.35, 1.06, 0)}
+        </div>
 
-      <div className="absolute inset-0">
-        {renderStars(starsBright, "bright", 0.6, 1.12, -0.2, "star-bright")}
+        <div className="absolute inset-0">
+          {renderStars(starsBright, "bright", 0.6, 1.12, -0.2, "star-bright")}
+        </div>
       </div>
 
       <style jsx>{`
+        .background-shell {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          background: #010102;
+        }
+
         .space-base {
           position: absolute;
           inset: 0;
@@ -126,8 +135,35 @@ export function BackgroundEnvironment() {
           );
         }
 
+        .star {
+          transform: translateZ(0);
+          will-change: opacity, transform;
+        }
+
         .star-bright {
           box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+          .space-accent-left {
+            opacity: 0.34;
+          }
+
+          .space-accent-right {
+            opacity: 0.3;
+          }
+
+          .space-vignette {
+            background: radial-gradient(
+              ellipse at center,
+              rgba(0, 0, 0, 0) 50%,
+              rgba(0, 0, 0, 0.22) 100%
+            );
+          }
+
+          .star-bright {
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.08);
+          }
         }
       `}</style>
     </div>

@@ -78,6 +78,9 @@ const VIEWBOX_HEIGHT = 608;
 const CENTER_X = VIEWBOX_WIDTH / 2;
 const CENTER_Y = VIEWBOX_HEIGHT / 2;
 
+const GLOBE_SCENE_WIDTH = 864;
+const GLOBE_SCENE_HEIGHT = 608;
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
@@ -97,7 +100,7 @@ function polarToCartesian(
   cy: number,
   rx: number,
   ry: number,
-  angle: number,
+  angle: number
 ) {
   return {
     x: cx + Math.cos(angle) * rx,
@@ -111,7 +114,7 @@ function createEllipseArcPath(
   rx: number,
   ry: number,
   startAngle: number,
-  endAngle: number,
+  endAngle: number
 ) {
   const start = polarToCartesian(cx, cy, rx, ry, startAngle);
   const end = polarToCartesian(cx, cy, rx, ry, endAngle);
@@ -206,7 +209,7 @@ function createLattice() {
 function projectNode(
   node: BaseNode,
   rotationX: number,
-  rotationY: number,
+  rotationY: number
 ): ProjectedNode {
   const cosY = Math.cos(rotationY);
   const sinY = Math.sin(rotationY);
@@ -235,7 +238,7 @@ function createLightningPath(
   from: { x: number; y: number },
   to: { x: number; y: number },
   seed: number,
-  chaos: number,
+  chaos: number
 ) {
   const points: { x: number; y: number }[] = [];
   const segments = 7 + Math.floor(chaos * 5);
@@ -272,7 +275,7 @@ function buildLightningBolts(
   projectedLattice: ProjectedNode[],
   speed: number,
   chaos: number,
-  rotationSeed: number,
+  rotationSeed: number
 ): LightningBolt[] {
   if (speed < 18 || projectedLattice.length === 0) return [];
 
@@ -284,7 +287,7 @@ function buildLightningBolts(
 
   for (let i = 0; i < boltCount; i += 1) {
     const aIndex = Math.floor(
-      Math.abs(Math.sin(rotationSeed * 0.83 + i * 1.71)) * frontNodes.length,
+      Math.abs(Math.sin(rotationSeed * 0.83 + i * 1.71)) * frontNodes.length
     );
     const a = frontNodes[aIndex];
     if (!a) continue;
@@ -297,7 +300,7 @@ function buildLightningBolts(
 
       const d = distance(
         { x: a.screenX, y: a.screenY },
-        { x: candidate.screenX, y: candidate.screenY },
+        { x: candidate.screenX, y: candidate.screenY }
       );
 
       if (d < 55 || d > 240) continue;
@@ -321,7 +324,7 @@ function buildLightningBolts(
       { x: a.screenX, y: a.screenY },
       { x: best.screenX, y: best.screenY },
       seed,
-      chaos,
+      chaos
     );
 
     const branches: { x: number; y: number }[][] = [];
@@ -329,7 +332,7 @@ function buildLightningBolts(
 
     for (let branchIndex = 0; branchIndex < branchCount; branchIndex += 1) {
       const pivotIndex = Math.floor(
-        points.length * lerp(0.24, 0.76, (branchIndex + 1) / (branchCount + 1)),
+        points.length * lerp(0.24, 0.76, (branchIndex + 1) / (branchCount + 1))
       );
       const pivot = points[pivotIndex];
       if (!pivot) continue;
@@ -345,8 +348,8 @@ function buildLightningBolts(
           pivot,
           branchTarget,
           seed + 1.8 + branchIndex,
-          Math.max(0.25, chaos * 0.72),
-        ),
+          Math.max(0.25, chaos * 0.72)
+        )
       );
     }
 
@@ -358,10 +361,10 @@ function buildLightningBolts(
         i % 4 === 0
           ? "#ffffff"
           : i % 4 === 1
-            ? "#c4d3ff"
-            : i % 4 === 2
-              ? "#8cf0ff"
-              : "#9ab3ff",
+          ? "#c4d3ff"
+          : i % 4 === 2
+          ? "#8cf0ff"
+          : "#9ab3ff",
       alpha: 0.24 + chaos * 0.52,
       width: 1.05 + chaos * 1.45,
     });
@@ -372,7 +375,7 @@ function buildLightningBolts(
 
 function buildAcceleratorArcs(
   speed: number,
-  rotationSeed: number,
+  rotationSeed: number
 ): AcceleratorArc[] {
   if (speed < 26) return [];
 
@@ -544,7 +547,7 @@ const GlobeOverlay = memo(function GlobeOverlay({
           const alpha = clamp(
             ((from.alpha + to.alpha) / 2) * (0.22 + Math.min(0.16, speed / 180)),
             0,
-            0.92,
+            0.92
           );
 
           return (
@@ -667,9 +670,7 @@ const GlobeOverlay = memo(function GlobeOverlay({
                   className="flex h-8 w-8 items-center justify-center rounded-full text-[0.68rem] font-semibold tracking-[0.12em] text-white"
                   style={{
                     background: `linear-gradient(135deg, ${node.color}, rgba(255,255,255,0.12))`,
-                    boxShadow: compressBadges
-                      ? `0 0 16px ${node.color}55`
-                      : undefined,
+                    boxShadow: compressBadges ? `0 0 16px ${node.color}55` : undefined,
                   }}
                 >
                   {node.short}
@@ -692,15 +693,28 @@ const GlobeOverlay = memo(function GlobeOverlay({
 export function SkillsGlobe() {
   const skills = useMemo(() => createSkillNodes(), []);
   const lattice = useMemo(() => createLattice(), []);
+  const prefersReducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    []
+  );
 
-  const [speed, setSpeed] = useState(15);
-  const [overlay, setOverlay] = useState<OverlayState>({
-    projectedSkills: skills.map((skill) => projectNode(skill, -0.34, 0.46)),
-    projectedLattice: lattice.nodes.map((node) => projectNode(node, -0.34, 0.46)),
+  const initialRotationX = -0.34;
+  const initialRotationY = 0.46;
+
+  const [speed, setSpeed] = useState(prefersReducedMotion ? 8 : 15);
+  const [overlay, setOverlay] = useState<OverlayState>(() => ({
+    projectedSkills: skills
+      .map((skill) => projectNode(skill, initialRotationX, initialRotationY))
+      .sort((first, second) => first.depth - second.depth),
+    projectedLattice: lattice.nodes.map((node) =>
+      projectNode(node, initialRotationX, initialRotationY)
+    ),
     lightningBolts: [],
     acceleratorArcs: [],
     reactorPhase: 0,
-  });
+  }));
 
   const stageRef = useRef<HTMLDivElement | null>(null);
   const frameRef = useRef<number | null>(null);
@@ -711,8 +725,8 @@ export function SkillsGlobe() {
   const pointerXRef = useRef(0);
   const pointerYRef = useRef(0);
 
-  const rotationXRef = useRef(-0.34);
-  const rotationYRef = useRef(0.46);
+  const rotationXRef = useRef(initialRotationX);
+  const rotationYRef = useRef(initialRotationY);
 
   const velocityXRef = useRef(BASE_AUTO_VELOCITY_X);
   const velocityYRef = useRef(BASE_AUTO_VELOCITY_Y);
@@ -737,7 +751,7 @@ export function SkillsGlobe() {
       ([entry]) => {
         isVisibleRef.current = entry.isIntersecting;
       },
-      { threshold: 0.06 },
+      { threshold: 0.06 }
     );
 
     observer.observe(stage);
@@ -745,6 +759,8 @@ export function SkillsGlobe() {
   }, []);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     let mounted = true;
 
     const updateFrame = (time: number) => {
@@ -784,7 +800,7 @@ export function SkillsGlobe() {
         .sort((first, second) => first.depth - second.depth);
 
       const nextLattice = lattice.nodes.map((node) =>
-        projectNode(node, rotationXRef.current, rotationYRef.current),
+        projectNode(node, rotationXRef.current, rotationYRef.current)
       );
 
       const chaos = clamp((currentSpeed - 18) / 32, 0, 1);
@@ -796,8 +812,8 @@ export function SkillsGlobe() {
         currentSpeed > 28
           ? true
           : currentSpeed > 20
-            ? frameCounterRef.current % 2 === 0
-            : frameCounterRef.current % 3 === 0;
+          ? frameCounterRef.current % 2 === 0
+          : frameCounterRef.current % 3 === 0;
 
       setOverlay((prev) => ({
         projectedSkills: nextSkills,
@@ -813,10 +829,10 @@ export function SkillsGlobe() {
         currentSpeed > 44
           ? 0.996
           : currentSpeed > 34
-            ? 0.993
-            : currentSpeed > 22
-              ? 0.99
-              : 0.987;
+          ? 0.993
+          : currentSpeed > 22
+          ? 0.99
+          : 0.987;
 
       velocityXRef.current *= Math.pow(damping, dt);
       velocityYRef.current *= Math.pow(damping, dt);
@@ -830,11 +846,11 @@ export function SkillsGlobe() {
         window.cancelAnimationFrame(frameRef.current);
       }
     };
-  }, [lattice, skills]);
+  }, [lattice, prefersReducedMotion, skills]);
 
   useEffect(() => {
     const stage = stageRef.current;
-    if (!stage) return;
+    if (!stage || prefersReducedMotion) return;
 
     const handlePointerDown = (event: PointerEvent) => {
       pointerActiveRef.current = true;
@@ -889,7 +905,7 @@ export function SkillsGlobe() {
       stage.removeEventListener("pointerleave", handlePointerUp);
       stage.removeEventListener("pointercancel", handlePointerUp);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <div className="relative">
@@ -904,42 +920,52 @@ export function SkillsGlobe() {
       </div>
 
       <div className="globe-stage-frame relative mx-auto w-full max-w-[54rem]">
-      <div
-        ref={stageRef}
-        className="globe-stage relative flex h-[33rem] w-full cursor-grab items-center justify-center overflow-visible sm:h-[34rem] lg:h-[38rem] active:cursor-grabbing"
-      >
         <div
-          className="globe-core-outer pointer-events-none absolute h-[24rem] w-[24rem] rounded-full sm:h-[24rem] sm:w-[24rem] lg:h-[29rem] lg:w-[29rem]"
-          style={{
-            background: `radial-gradient(circle, rgba(130,145,255,${0.05 + highEnergyRatio * 0.08}) 0%, rgba(90,122,255,${0.03 + highEnergyRatio * 0.06}) 34%, rgba(0,0,0,0) 72%)`,
-            filter: `blur(${20 + highEnergyRatio * 14}px)`,
-            transform: `scale(${1 + highEnergyRatio * 0.12})`,
-            opacity: 0.8,
-          }}
-        />
+          ref={stageRef}
+          className="globe-stage relative flex w-full cursor-grab items-center justify-center overflow-visible active:cursor-grabbing"
+        >
+          <div
+            className="globe-core-outer pointer-events-none absolute rounded-full"
+            style={{
+              background: `radial-gradient(circle, rgba(130,145,255,${
+                0.05 + highEnergyRatio * 0.08
+              }) 0%, rgba(90,122,255,${
+                0.03 + highEnergyRatio * 0.06
+              }) 34%, rgba(0,0,0,0) 72%)`,
+              filter: `blur(${20 + highEnergyRatio * 14}px)`,
+              transform: `scale(${1 + highEnergyRatio * 0.12})`,
+              opacity: 0.8,
+            }}
+          />
 
-        <div
-          className="globe-core-inner pointer-events-none absolute h-[14rem] w-[14rem] rounded-full sm:h-[14rem] sm:w-[14rem] lg:h-[17rem] lg:w-[17rem]"
-          style={{
-            background: `radial-gradient(circle, rgba(255,255,255,${0.02 + highEnergyRatio * 0.05}) 0%, rgba(153,211,255,${0.04 + highEnergyRatio * 0.08}) 30%, rgba(79,118,255,0) 72%)`,
-            filter: `blur(${18 + highEnergyRatio * 18}px)`,
-            transform: `scale(${1 + highEnergyRatio * 0.18})`,
-            opacity: 0.95,
-          }}
-        />
+          <div
+            className="globe-core-inner pointer-events-none absolute rounded-full"
+            style={{
+              background: `radial-gradient(circle, rgba(255,255,255,${
+                0.02 + highEnergyRatio * 0.05
+              }) 0%, rgba(153,211,255,${
+                0.04 + highEnergyRatio * 0.08
+              }) 30%, rgba(79,118,255,0) 72%)`,
+              filter: `blur(${18 + highEnergyRatio * 18}px)`,
+              transform: `scale(${1 + highEnergyRatio * 0.18})`,
+              opacity: 0.95,
+            }}
+          />
 
-        <div className="globe-ring-outer pointer-events-none absolute h-[24rem] w-[24rem] rounded-full border border-[#6c78ff]/12 sm:h-[24rem] sm:w-[24rem] lg:h-[29rem] lg:w-[29rem]" />
-        <div className="globe-ring-inner pointer-events-none absolute h-[15rem] w-[24rem] rounded-full border border-[#8890ff]/12 opacity-40 sm:h-[15rem] sm:w-[24rem] lg:h-[18rem] lg:w-[29rem]" />
+          <div className="globe-ring-outer pointer-events-none absolute rounded-full border border-[#6c78ff]/12" />
+          <div className="globe-ring-inner pointer-events-none absolute rounded-full border border-[#8890ff]/12 opacity-40" />
 
-        <div className="globe-scene absolute left-1/2 top-[48%] h-[38rem] w-[54rem] -translate-x-1/2 -translate-y-1/2 sm:top-1/2 sm:h-full sm:w-full">
-          <GlobeOverlay overlay={overlay} edges={lattice.edges} speed={speed} />
+          <div className="globe-scene-shell">
+            <div className="globe-scene">
+              <GlobeOverlay overlay={overlay} edges={lattice.edges} speed={speed} />
+            </div>
+          </div>
+
+          <div className="pointer-events-none absolute bottom-0 left-1/2 h-px w-[14rem] -translate-x-1/2 bg-gradient-to-r from-transparent via-white/16 to-transparent" />
         </div>
-
-        <div className="pointer-events-none absolute bottom-0 left-1/2 h-px w-[14rem] -translate-x-1/2 bg-gradient-to-r from-transparent via-white/16 to-transparent" />
-      </div>
       </div>
 
-      <div className="mx-auto mt-3 max-w-[30rem] px-1 sm:mt-8">
+      <div className="mx-auto mt-4 max-w-[30rem] px-1 sm:mt-8">
         <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-[0.28em] text-white/42">
           <span>Speed</span>
           <span className="text-white/65">{speed.toFixed(0)}</span>
@@ -998,39 +1024,114 @@ export function SkillsGlobe() {
           }
         }
 
+        .globe-stage-frame {
+          overflow: visible;
+        }
+
+        .globe-stage {
+          height: 38rem;
+        }
+
+        .globe-core-outer {
+          height: 29rem;
+          width: 29rem;
+        }
+
+        .globe-core-inner {
+          height: 17rem;
+          width: 17rem;
+        }
+
+        .globe-ring-outer {
+          height: 29rem;
+          width: 29rem;
+        }
+
         .globe-ring-inner {
+          height: 18rem;
+          width: 29rem;
           transform: rotateX(74deg);
         }
 
-        @media (max-width: 639px) {
-          .globe-stage-frame {
-            height: 24.5rem;
-            overflow: visible;
-          }
+        .globe-scene-shell {
+          --globe-scale: 1;
+          position: relative;
+          width: 100%;
+          height: 100%;
+          overflow: visible;
+        }
 
+        .globe-scene {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: ${GLOBE_SCENE_WIDTH}px;
+          height: ${GLOBE_SCENE_HEIGHT}px;
+          transform: translate(-50%, -50%) scale(var(--globe-scale));
+          transform-origin: center center;
+        }
+
+        @media (max-width: 1023px) {
           .globe-stage {
-            height: 24.5rem;
+            height: 34rem;
           }
 
-          .globe-scene {
-            transform: translate(-50%, -50%) scale(0.58);
-            transform-origin: center center;
+          .globe-core-outer {
+            height: 24rem;
+            width: 24rem;
+          }
+
+          .globe-core-inner {
+            height: 14rem;
+            width: 14rem;
+          }
+
+          .globe-ring-outer {
+            height: 24rem;
+            width: 24rem;
+          }
+
+          .globe-ring-inner {
+            height: 15rem;
+            width: 24rem;
+          }
+
+          .globe-scene-shell {
+            --globe-scale: 0.82;
           }
         }
 
-        @media (min-width: 640px) and (max-width: 1023px) {
+        @media (max-width: 767px) {
           .globe-stage-frame {
-            height: 31rem;
-            overflow: visible;
+            height: 26.75rem;
           }
 
           .globe-stage {
-            height: 31rem;
+            height: 26.75rem;
           }
 
-          .globe-scene {
-            transform: translate(-50%, -50%) scale(0.76);
-            transform-origin: center center;
+          .globe-scene-shell {
+            --globe-scale: 0.64;
+          }
+        }
+
+        @media (max-width: 479px) {
+          .globe-stage-frame {
+            height: 23.75rem;
+          }
+
+          .globe-stage {
+            height: 23.75rem;
+          }
+
+          .globe-scene-shell {
+            --globe-scale: 0.52;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .marquee-track {
+            animation-duration: 42s;
           }
         }
       `}</style>

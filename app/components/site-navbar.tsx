@@ -21,9 +21,21 @@ export function SiteNavbar({
     if (!nav) return;
 
     const updateSize = () => {
-      setNavSize({
-        width: nav.offsetWidth,
-        height: nav.offsetHeight,
+      const nextWidth = nav.offsetWidth;
+      const nextHeight = nav.offsetHeight;
+
+      setNavSize((current) => {
+        if (
+          current.width === nextWidth &&
+          current.height === nextHeight
+        ) {
+          return current;
+        }
+
+        return {
+          width: nextWidth,
+          height: nextHeight,
+        };
       });
     };
 
@@ -32,7 +44,12 @@ export function SiteNavbar({
     const resizeObserver = new ResizeObserver(updateSize);
     resizeObserver.observe(nav);
 
-    return () => resizeObserver.disconnect();
+    window.addEventListener("resize", updateSize);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateSize);
+    };
   }, []);
 
   useEffect(() => {
@@ -57,7 +74,7 @@ export function SiteNavbar({
 
         const distance = Math.min(
           Math.abs(rect.top - focusY),
-          Math.abs(rect.bottom - focusY),
+          Math.abs(rect.bottom - focusY)
         );
 
         if (distance < bestDistance) {
@@ -66,11 +83,12 @@ export function SiteNavbar({
         }
       }
 
-      setActiveId(bestId);
+      setActiveId((current) => (current === bestId ? current : bestId));
     };
 
     const scheduleResolve = () => {
       if (raf) return;
+
       raf = window.requestAnimationFrame(() => {
         raf = 0;
         resolveActive();
@@ -85,7 +103,10 @@ export function SiteNavbar({
     return () => {
       window.removeEventListener("scroll", scheduleResolve);
       window.removeEventListener("resize", scheduleResolve);
-      if (raf) window.cancelAnimationFrame(raf);
+
+      if (raf) {
+        window.cancelAnimationFrame(raf);
+      }
     };
   }, [sections]);
 
@@ -105,13 +126,32 @@ export function SiteNavbar({
     };
   }, [navSize]);
 
+  const handleNavClick = (sectionId: string) => {
+    setActiveId(sectionId);
+
+    const element = document.getElementById(sectionId);
+    if (!element) return;
+
+    const navHeight = navRef.current?.offsetHeight ?? 0;
+    const isMobile = window.innerWidth < 768;
+    const extraOffset = isMobile ? 18 : 24;
+    const rect = element.getBoundingClientRect();
+    const absoluteTop = window.scrollY + rect.top;
+    const targetTop = absoluteTop - navHeight - extraOffset;
+
+    window.scrollTo({
+      top: Math.max(targetTop, 0),
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <header className="sticky top-0 z-30">
+    <header className="pointer-events-none sticky top-0 z-30">
       <div className="flex justify-center px-4 pt-3 sm:px-10 sm:pt-4 lg:px-16">
         <nav
           ref={navRef}
           aria-label="Primary"
-          className="site-nav relative inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-full px-1.5 py-1.5 md:px-2 md:py-2"
+          className="site-nav pointer-events-auto relative inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-full px-1.5 py-1.5 md:px-2 md:py-2"
         >
           {navSize.width > 0 && (
             <svg
@@ -157,21 +197,9 @@ export function SiteNavbar({
                 aria-current={isActive ? "page" : undefined}
                 onClick={(event) => {
                   event.preventDefault();
-                  setActiveId(section.id);
-
-                  const element = document.getElementById(section.id);
-                  if (!element) return;
-
-                  const rect = element.getBoundingClientRect();
-                  const absoluteTop = window.scrollY + rect.top;
-                  const targetTop = absoluteTop - (window.innerHeight - rect.height) / 2;
-
-                  window.scrollTo({
-                    top: Math.max(targetTop, 0),
-                    behavior: "smooth",
-                  });
+                  handleNavClick(section.id);
                 }}
-                className={`relative z-10 rounded-full px-4 py-2 text-[0.88rem] font-medium transition sm:px-5 sm:py-2.5 sm:text-sm ${
+                className={`relative z-10 rounded-full px-4 py-2 text-[0.88rem] font-medium whitespace-nowrap transition sm:px-5 sm:py-2.5 sm:text-sm ${
                   isActive
                     ? "bg-white/[0.08] text-[var(--foreground)]"
                     : "text-[var(--foreground-subtle)] hover:text-[var(--foreground)]"
@@ -185,6 +213,13 @@ export function SiteNavbar({
           <style jsx>{`
             .site-nav {
               isolation: isolate;
+              -ms-overflow-style: none;
+              scrollbar-width: none;
+              backdrop-filter: blur(14px);
+            }
+
+            .site-nav::-webkit-scrollbar {
+              display: none;
             }
 
             .nav-trace {

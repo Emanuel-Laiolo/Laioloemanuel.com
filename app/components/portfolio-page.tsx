@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { BackgroundEnvironment } from "./background-environment";
 import { IntroHero } from "./intro-hero";
 import { ExperienceFlow } from "./experience-flow";
-import { ExperienceOrbit } from "./experience-orbit";
 import { SiteNavbar } from "./site-navbar";
 import { SkillsGlobe } from "./skills-globe";
 
@@ -16,30 +15,6 @@ const sections = [
 ] as const;
 
 type SectionId = (typeof sections)[number]["id"];
-
-function SectionIntro({
-  eyebrow,
-  title,
-  description,
-}: {
-  eyebrow: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="max-w-2xl space-y-5">
-      <p className="text-[0.72rem] font-medium uppercase tracking-[0.34em] text-[var(--foreground-subtle)]">
-        {eyebrow}
-      </p>
-      <h2 className="text-3xl font-semibold tracking-[-0.045em] text-[var(--foreground)] sm:text-4xl lg:text-[2.9rem]">
-        {title}
-      </h2>
-      <p className="max-w-xl text-base leading-8 text-[var(--foreground-muted)] sm:text-lg">
-        {description}
-      </p>
-    </div>
-  );
-}
 
 function SideProgress() {
   const [activeId, setActiveId] = useState<SectionId>("hero");
@@ -66,7 +41,7 @@ function SideProgress() {
 
         const distance = Math.min(
           Math.abs(rect.top - focusY),
-          Math.abs(rect.bottom - focusY),
+          Math.abs(rect.bottom - focusY)
         );
 
         if (distance < bestDistance) {
@@ -75,11 +50,12 @@ function SideProgress() {
         }
       }
 
-      setActiveId(bestId);
+      setActiveId((current) => (current === bestId ? current : bestId));
     };
 
     const scheduleResolve = () => {
       if (raf) return;
+
       raf = window.requestAnimationFrame(() => {
         raf = 0;
         resolveActive();
@@ -94,7 +70,10 @@ function SideProgress() {
     return () => {
       window.removeEventListener("scroll", scheduleResolve);
       window.removeEventListener("resize", scheduleResolve);
-      if (raf) window.cancelAnimationFrame(raf);
+
+      if (raf) {
+        window.cancelAnimationFrame(raf);
+      }
     };
   }, []);
 
@@ -102,7 +81,7 @@ function SideProgress() {
     <aside className="fixed left-7 top-1/2 z-20 hidden -translate-y-1/2 xl:block">
       <nav
         aria-label="Section progress"
-        className="rounded-full border border-white/[0.08] bg-[rgba(6,7,10,0.72)] px-3 py-4"
+        className="rounded-full border border-white/[0.08] bg-[rgba(6,7,10,0.72)] px-3 py-4 backdrop-blur-xl"
       >
         <ol className="flex flex-col gap-4">
           {sections.map((section) => {
@@ -147,8 +126,8 @@ function SkillsSection() {
       id="skills"
       className="scroll-mt-28 border-b border-[var(--border)] py-28 sm:py-36 lg:py-44"
     >
-      <div className="rounded-[1.6rem] border border-white/[0.05] bg-[rgba(4,5,8,0.72)] px-4 py-10 sm:rounded-[2rem] sm:px-10 sm:py-14 lg:px-14 lg:py-18">
-        <div className="relative">
+      <div className="rounded-[1.6rem] border border-white/[0.05] bg-[rgba(4,5,8,0.72)] px-3 py-8 sm:rounded-[2rem] sm:px-10 sm:py-14 lg:px-14 lg:py-[4.5rem]">
+        <div className="relative overflow-visible">
           <SkillsGlobe />
         </div>
       </div>
@@ -174,7 +153,10 @@ function ContactSection() {
                 Open to serious opportunities in software, product, and systems.
               </h2>
               <p className="max-w-2xl text-[1rem] leading-7 text-[var(--foreground-muted)] sm:text-lg sm:leading-8">
-                I’m looking for the kind of work where technical thinking, execution, and long-term judgment actually matter. If you’re hiring, building, or exploring a strong fit, the best way to reach me is by email or LinkedIn.
+                I’m looking for the kind of work where technical thinking,
+                execution, and long-term judgment actually matter. If you’re
+                hiring, building, or exploring a strong fit, the best way to
+                reach me is by email or LinkedIn.
               </p>
             </div>
 
@@ -228,7 +210,8 @@ function ContactSection() {
                 Focus
               </p>
               <p className="mt-4 text-base leading-7 text-[var(--foreground-muted)]">
-                Software development, technical product work, systems thinking, and execution-heavy roles with real ownership.
+                Software development, technical product work, systems thinking,
+                and execution-heavy roles with real ownership.
               </p>
             </div>
           </div>
@@ -240,12 +223,12 @@ function ContactSection() {
 
 export function PortfolioPage() {
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen overflow-x-clip">
       <BackgroundEnvironment />
       <SideProgress />
       <SiteNavbar sections={sections} />
 
-      <main className="relative z-10 mx-auto flex w-full max-w-[88rem] flex-col px-4 pb-20 sm:px-10 sm:pb-24 lg:px-16">
+      <main className="relative z-10 mx-auto flex w-full max-w-[88rem] flex-col overflow-x-clip px-4 pb-20 sm:px-10 sm:pb-24 lg:px-16">
         <IntroHero />
         <SkillsSection />
         <ProjectsSection />

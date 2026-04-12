@@ -243,7 +243,7 @@ function SourceHandle({ id = "source" }: { id?: string }) {
         bottom: -15,
       }}
     >
-      <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-white text-[0.95rem] font-semibold">
+      <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-[0.95rem] font-semibold text-white">
         +
       </span>
     </Handle>
@@ -268,7 +268,7 @@ function TargetHandle() {
         top: -15,
       }}
     >
-      <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-white text-[0.82rem] font-semibold">
+      <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-[0.82rem] font-semibold text-white">
         ↓
       </span>
     </Handle>
@@ -277,7 +277,7 @@ function TargetHandle() {
 
 const HUB_HANDLE_LEFTS = [8, 20, 32, 44, 56, 68, 80, 92] as const;
 
-const HubNode = memo(function HubNode(_props: NodeProps<FlowNode>) {
+const HubNode = memo(function HubNode() {
   return (
     <div className="relative min-w-[15.5rem] rounded-[1.45rem] border border-white/12 bg-[linear-gradient(180deg,rgba(19,24,36,0.98),rgba(10,12,19,0.98))] px-5 py-4 text-center shadow-[0_20px_58px_rgba(0,0,0,0.34),0_0_54px_rgba(129,157,255,0.14)]">
       {HUB_HANDLE_LEFTS.map((left, index) => (
@@ -301,23 +301,31 @@ const HubNode = memo(function HubNode(_props: NodeProps<FlowNode>) {
           }}
         />
       ))}
-      <p className="text-[0.64rem] uppercase tracking-[0.28em] text-white/38">Experience Hub</p>
+      <p className="text-[0.64rem] uppercase tracking-[0.28em] text-white/38">
+        Experience Hub
+      </p>
       <h3 className="mt-2 text-[1.15rem] font-semibold tracking-[0.18em] text-white/94">
         EMANUEL LAIOLO
       </h3>
-      <p className="mt-2 text-sm text-white/48">Projects, roles, foundations, and growth paths</p>
+      <p className="mt-2 text-sm text-white/48">
+        Projects, roles, foundations, and growth paths
+      </p>
     </div>
   );
 });
 
-const ExperienceNodeCard = memo(function ExperienceNodeCard(props: NodeProps<FlowNode>) {
+const ExperienceNodeCard = memo(function ExperienceNodeCard(
+  props: NodeProps<FlowNode>
+) {
   const data = props.data as ExperienceNodeData;
   const { selected } = props;
 
   return (
     <div
       className={`relative w-[18.2rem] rounded-[1.2rem] border px-4 py-3.5 text-left transition duration-200 ${
-        selected ? "border-white/24 bg-[rgba(16,18,28,0.98)]" : "border-white/10 bg-[rgba(10,12,18,0.96)]"
+        selected
+          ? "border-white/24 bg-[rgba(16,18,28,0.98)]"
+          : "border-white/10 bg-[rgba(10,12,18,0.96)]"
       }`}
       style={{
         boxShadow: selected
@@ -330,8 +338,12 @@ const ExperienceNodeCard = memo(function ExperienceNodeCard(props: NodeProps<Flo
 
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[0.62rem] uppercase tracking-[0.22em] text-white/34">{data.stage}</p>
-          <h3 className="mt-1 text-[1.02rem] font-semibold tracking-[-0.03em] text-white/94">{data.title}</h3>
+          <p className="text-[0.62rem] uppercase tracking-[0.22em] text-white/34">
+            {data.stage}
+          </p>
+          <h3 className="mt-1 text-[1.02rem] font-semibold tracking-[-0.03em] text-white/94">
+            {data.title}
+          </h3>
         </div>
         <span
           className="mt-0.5 inline-block h-2.5 w-2.5 rounded-full"
@@ -339,7 +351,9 @@ const ExperienceNodeCard = memo(function ExperienceNodeCard(props: NodeProps<Flo
         />
       </div>
 
-      <p className="mt-3 text-[0.72rem] uppercase tracking-[0.18em] text-white/36">{data.subtitle}</p>
+      <p className="mt-3 text-[0.72rem] uppercase tracking-[0.18em] text-white/36">
+        {data.subtitle}
+      </p>
       <p className="mt-1 text-sm text-white/42">{data.period}</p>
 
       {selected ? (
@@ -403,7 +417,8 @@ const edgeTypes: EdgeTypes = {
 function ExperienceFlowInner() {
   const [selectedId, setSelectedId] = useState<string | null>(INITIAL_SELECTED);
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
-  const [showSecondaryRelationships, setShowSecondaryRelationships] = useState(false);
+  const [showSecondaryRelationships, setShowSecondaryRelationships] =
+    useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [isCreatorOpen, setIsCreatorOpen] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -412,25 +427,24 @@ function ExperienceFlowInner() {
   const [nodes, setNodes, onNodesChange] = useNodesState(cloneNodes());
   const [edges, setEdges, onEdgesChange] = useEdgesState(cloneEdges());
 
-
   useEffect(() => {
     setNodes((currentNodes) =>
       currentNodes.map((node) => ({
         ...node,
         selected: node.id === selectedId,
         data: { ...node.data, selected: node.id === selectedId },
-      })),
+      }))
     );
   }, [selectedId, setNodes]);
 
   const selectedNode = useMemo(
     () => nodes.find((node) => node.id === selectedId) ?? null,
-    [nodes, selectedId],
+    [nodes, selectedId]
   );
 
   const selectedEdge = useMemo(
     () => edges.find((edge) => edge.id === selectedEdgeId) ?? null,
-    [edges, selectedEdgeId],
+    [edges, selectedEdgeId]
   );
 
   const visibleEdges = useMemo(() => {
@@ -443,74 +457,91 @@ function ExperienceFlowInner() {
     setSelectedEdgeId(null);
   }, []);
 
-  const onNodeDoubleClick = useCallback<NodeMouseHandler<FlowNode>>((_, node) => {
-    if (!isEditMode) return;
-    setSelectedId(node.id);
-    setSelectedEdgeId(null);
-    setIsEditorOpen(true);
-  }, [isEditMode]);
+  const onNodeDoubleClick = useCallback<NodeMouseHandler<FlowNode>>(
+    (_, node) => {
+      if (!isEditMode) return;
+      setSelectedId(node.id);
+      setSelectedEdgeId(null);
+      setIsEditorOpen(true);
+    },
+    [isEditMode]
+  );
 
-  const onEdgeClick = useCallback((_: React.MouseEvent, edge: FlowEdge) => {
-    if (!isEditMode) return;
-    setSelectedEdgeId(edge.id);
-    setSelectedId(null);
-  }, [isEditMode]);
+  const onEdgeClick = useCallback(
+    (_: React.MouseEvent, edge: FlowEdge) => {
+      if (!isEditMode) return;
+      setSelectedEdgeId(edge.id);
+      setSelectedId(null);
+    },
+    [isEditMode]
+  );
 
-  const isValidConnection = useCallback<IsValidConnection>((connection) => {
-    const { source, target, sourceHandle, targetHandle } = connection;
-    if (!source || !target) return false;
-    if (source === target) return false;
-    if (sourceHandle && source !== "emanuel" && sourceHandle !== "source") return false;
-    if (targetHandle && targetHandle !== "target") return false;
+  const isValidConnection = useCallback<IsValidConnection>(
+    (connection) => {
+      const { source, target, sourceHandle, targetHandle } = connection;
+      if (!source || !target) return false;
+      if (source === target) return false;
+      if (sourceHandle && source !== "emanuel" && sourceHandle !== "source") {
+        return false;
+      }
+      if (targetHandle && targetHandle !== "target") return false;
 
-    return !edges.some(
-      (edge) =>
-        edge.source === source &&
-        edge.target === target &&
-        edge.sourceHandle === sourceHandle &&
-        edge.targetHandle === targetHandle,
-    );
-  }, [edges]);
+      return !edges.some(
+        (edge) =>
+          edge.source === source &&
+          edge.target === target &&
+          edge.sourceHandle === sourceHandle &&
+          edge.targetHandle === targetHandle
+      );
+    },
+    [edges]
+  );
 
-  const onConnect = useCallback((connection: Connection) => {
-    if (!isEditMode) return;
-    if (!connection.source || !connection.target) return;
-    if (!isValidConnection(connection)) return;
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      if (!isEditMode) return;
+      if (!connection.source || !connection.target) return;
+      if (!isValidConnection(connection)) return;
 
-    const nextEdge: FlowEdge = {
-      source: connection.source,
-      target: connection.target,
-      sourceHandle:
-        connection.sourceHandle ??
-        (connection.source === "emanuel" ? "hub-source-7" : "source"),
-      targetHandle: connection.targetHandle ?? "target",
-      id: `manual-${connection.source}-${connection.target}-${Date.now()}`,
-      type: "workflow",
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-        color: EDGE_PRIMARY,
-        width: 20,
-        height: 20,
-      },
-      data: {
-        color: EDGE_PRIMARY,
-        kind: "primary",
-      },
-    };
+      const nextEdge: FlowEdge = {
+        source: connection.source,
+        target: connection.target,
+        sourceHandle:
+          connection.sourceHandle ??
+          (connection.source === "emanuel" ? "hub-source-7" : "source"),
+        targetHandle: connection.targetHandle ?? "target",
+        id: `manual-${connection.source}-${connection.target}-${Date.now()}`,
+        type: "workflow",
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: EDGE_PRIMARY,
+          width: 20,
+          height: 20,
+        },
+        data: {
+          color: EDGE_PRIMARY,
+          kind: "primary",
+        },
+      };
 
-    setEdges((currentEdges) => addEdge(nextEdge, currentEdges));
-  }, [isEditMode, isValidConnection, setEdges]);
+      setEdges((currentEdges) => addEdge(nextEdge, currentEdges));
+    },
+    [isEditMode, isValidConnection, setEdges]
+  );
 
-  const updateSelectedNode = useCallback((patch: Partial<HubNodeData & ExperienceNodeData>) => {
-    if (!selectedNode) return;
-    setNodes((currentNodes) =>
-      currentNodes.map((node) =>
-        node.id === selectedNode.id
-          ? { ...node, data: { ...node.data, ...patch } }
-          : node,
-      ),
-    );
-  }, [selectedNode, setNodes]);
+  const updateSelectedNode = useCallback(
+    (patch: Partial<HubNodeData & ExperienceNodeData>) => {
+      if (!selectedNode) return;
+      setNodes((currentNodes) =>
+        currentNodes.map((node) =>
+          node.id === selectedNode.id
+            ? { ...node, data: { ...node.data, ...patch } }
+            : node
+        )
+      );
+    },
+    [selectedNode, setNodes]
+  );
 
   const createNode = useCallback(() => {
     const id = `card-${Date.now()}`;
@@ -562,14 +593,18 @@ function ExperienceFlowInner() {
     if (!selectedNode) return;
     const nodeId = selectedNode.id;
     setNodes((current) => current.filter((node) => node.id !== nodeId));
-    setEdges((current) => current.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
+    setEdges((current) =>
+      current.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
+    );
     setSelectedId(null);
     setIsEditorOpen(false);
   }, [selectedNode, setEdges, setNodes]);
 
   const deleteSelectedEdge = useCallback(() => {
     if (!selectedEdgeId) return;
-    setEdges((current) => current.filter((edge) => edge.id !== selectedEdgeId));
+    setEdges((current) =>
+      current.filter((edge) => edge.id !== selectedEdgeId)
+    );
     setSelectedEdgeId(null);
   }, [selectedEdgeId, setEdges]);
 
@@ -585,11 +620,18 @@ function ExperienceFlowInner() {
 
   const fitViewOptions = useMemo(
     () => ({ padding: 0.58, minZoom: 0.42, maxZoom: 1.05 }),
-    [],
+    []
   );
 
-  const selectedHub = selectedNode?.type === "hub" ? (selectedNode.data as HubNodeData) : null;
-  const selectedCard = selectedNode?.type === "experience" ? (selectedNode.data as ExperienceNodeData) : null;
+  const selectedHub =
+    selectedNode?.type === "hub"
+      ? (selectedNode.data as HubNodeData)
+      : null;
+
+  const selectedCard =
+    selectedNode?.type === "experience"
+      ? (selectedNode.data as ExperienceNodeData)
+      : null;
 
   return (
     <section
@@ -603,6 +645,10 @@ function ExperienceFlowInner() {
         #projects .react-flow__background svg {
           max-width: none !important;
         }
+
+        #projects .react-flow__attribution {
+          display: none !important;
+        }
       `}</style>
 
       <div className="space-y-10 lg:space-y-14">
@@ -614,7 +660,10 @@ function ExperienceFlowInner() {
             A living map of my work, built by me.
           </h2>
           <p className="mx-auto max-w-3xl text-[0.98rem] leading-7 text-[var(--foreground-muted)] sm:text-lg sm:leading-8">
-            I built this interactive canvas to show how my projects, skills, and technical foundations connect over time. You can move nodes, inspect links, and explore the structure freely — while the original composition stays intentional and curated.
+            I built this interactive canvas to show how my projects, skills, and
+            technical foundations connect over time. You can move nodes, inspect
+            links, and explore the structure freely — while the original
+            composition stays intentional and curated.
           </p>
         </div>
 
@@ -624,276 +673,370 @@ function ExperienceFlowInner() {
               <p className="text-[0.64rem] uppercase tracking-[0.28em] text-white/34">
                 React Flow Canvas
               </p>
-              
             </div>
 
             <div className="flex items-center gap-2" />
           </div>
 
-          <div className="experience-stage relative h-[38rem] w-full overflow-hidden bg-[#111318] sm:h-[48rem] lg:h-[58rem]">
-            <div className="experience-scene absolute inset-0">
-            <ReactFlow<FlowNode, FlowEdge>
-              nodes={nodes}
-              edges={visibleEdges}
-              nodeTypes={nodeTypes}
-              edgeTypes={edgeTypes}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              onNodeClick={onNodeClick}
-              onNodeDoubleClick={onNodeDoubleClick}
-              onEdgeClick={onEdgeClick}
-              isValidConnection={isValidConnection}
-              fitView
-              fitViewOptions={fitViewOptions}
-              defaultEdgeOptions={{
-                type: "workflow",
-                markerEnd: {
-                  type: MarkerType.ArrowClosed,
-                  color: EDGE_PRIMARY,
-                  width: 20,
-                  height: 20,
-                },
-              }}
-              connectionLineType={ConnectionLineType.SmoothStep}
-              connectionLineStyle={{
-                stroke: EDGE_PRIMARY,
-                strokeWidth: 2,
-                strokeDasharray: "3 8",
-              }}
-              minZoom={0.45}
-              maxZoom={1.4}
-              colorMode="dark"
-              panOnDrag
-              selectionOnDrag
-              nodesDraggable
-              nodesConnectable={isEditMode}
-              elementsSelectable
-              connectOnClick={false}
-              connectionRadius={40}
-              deleteKeyCode={null}
-              proOptions={{ hideAttribution: true }}
-            >
-              <Background gap={20} size={1} />
-              <MiniMap
-                zoomable
-                pannable
-                style={{
-                  background: "#0f1117",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
-              />
-              <Controls
-                style={{
-                  background: "#0f1117",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                }}
-                showInteractive={false}
-              />
-              <Panel position="top-left">
-                <div className="hidden rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-3 py-2.5 text-xs leading-5 text-white/62 backdrop-blur-xl sm:block sm:w-[min(100%,26rem)] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
-                  Select a node to reveal its information. You can also move nodes, create connections, duplicate items, or reset the canvas from the panel on the right.
-                </div>
-              </Panel>
+          <div className="experience-scroll-shell">
+            <div className="experience-scroll-track">
+              <div className="experience-stage relative w-full overflow-hidden bg-[#111318]">
+                <div className="experience-scene absolute inset-0">
+                  <ReactFlow<FlowNode, FlowEdge>
+                    nodes={nodes}
+                    edges={visibleEdges}
+                    nodeTypes={nodeTypes}
+                    edgeTypes={edgeTypes}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onConnect={onConnect}
+                    onNodeClick={onNodeClick}
+                    onNodeDoubleClick={onNodeDoubleClick}
+                    onEdgeClick={onEdgeClick}
+                    isValidConnection={isValidConnection}
+                    fitView
+                    fitViewOptions={fitViewOptions}
+                    defaultEdgeOptions={{
+                      type: "workflow",
+                      markerEnd: {
+                        type: MarkerType.ArrowClosed,
+                        color: EDGE_PRIMARY,
+                        width: 20,
+                        height: 20,
+                      },
+                    }}
+                    connectionLineType={ConnectionLineType.SmoothStep}
+                    connectionLineStyle={{
+                      stroke: EDGE_PRIMARY,
+                      strokeWidth: 2,
+                      strokeDasharray: "3 8",
+                    }}
+                    minZoom={0.45}
+                    maxZoom={1.4}
+                    colorMode="dark"
+                    panOnDrag
+                    selectionOnDrag
+                    nodesDraggable
+                    nodesConnectable={isEditMode}
+                    elementsSelectable
+                    connectOnClick={false}
+                    connectionRadius={40}
+                    deleteKeyCode={null}
+                    proOptions={{ hideAttribution: true }}
+                  >
+                    <Background gap={20} size={1} />
+                    <MiniMap
+                      zoomable
+                      pannable
+                      style={{
+                        background: "#0f1117",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }}
+                    />
+                    <Controls
+                      style={{
+                        background: "#0f1117",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }}
+                      showInteractive={false}
+                    />
+                    <Panel position="top-left">
+                      <div className="hidden rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-3 py-2.5 text-xs leading-5 text-white/62 backdrop-blur-xl sm:block sm:w-[min(100%,26rem)] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
+                        Select a node to reveal its information. You can also
+                        move nodes, create connections, duplicate items, or
+                        reset the canvas from the panel on the right.
+                      </div>
+                    </Panel>
 
-              {isEditMode ? (
-                <>
-                  <Panel position="top-right">
-                    <div className="hidden flex-col gap-2 rounded-[1rem] border border-white/[0.08] bg-[rgba(15,17,23,0.88)] p-3 backdrop-blur-xl sm:flex sm:w-[17.5rem] sm:p-4">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsCreatorOpen(true);
-                          setIsEditorOpen(false);
-                        }}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78"
-                      >
-                        Add Node
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsEditorOpen((current) => !current)}
-                        disabled={!selectedNode}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
-                      >
-                        Edit Selected
-                      </button>
-                      <button
-                        type="button"
-                        onClick={duplicateSelected}
-                        disabled={selectedNode?.type !== "experience"}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
-                      >
-                        Duplicate
-                      </button>
-                      <button
-                        type="button"
-                        onClick={deleteSelectedNode}
-                        disabled={!selectedNode}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
-                      >
-                        Delete Node
-                      </button>
-                      <button
-                        type="button"
-                        onClick={deleteSelectedEdge}
-                        disabled={!selectedEdge}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
-                      >
-                        Delete Edge
-                      </button>
-                      <button
-                        type="button"
-                        onClick={resetGraph}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78"
-                      >
-                        Reset
-                      </button>
-                    </div>
-                  </Panel>
-
-                  {isCreatorOpen ? (
-                    <Panel position="top-right">
-                      <div className="hidden rounded-[1.15rem] border border-white/[0.08] bg-[rgba(15,17,23,0.92)] p-3 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:mt-44 sm:block sm:w-[20rem] sm:p-4">
-                        <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/36">Node Creator</p>
-                        <div className="mt-4 space-y-3">
-                          <Field label="Name" value={newNodeName} onChange={setNewNodeName} />
-                          <Field label="Stage" value={newNodeStage} onChange={setNewNodeStage} />
-                          <div className="flex gap-2">
+                    {isEditMode ? (
+                      <>
+                        <Panel position="top-right">
+                          <div className="hidden flex-col gap-2 rounded-[1rem] border border-white/[0.08] bg-[rgba(15,17,23,0.88)] p-3 backdrop-blur-xl sm:flex sm:w-[17.5rem] sm:p-4">
                             <button
                               type="button"
-                              onClick={createNode}
+                              onClick={() => {
+                                setIsCreatorOpen(true);
+                                setIsEditorOpen(false);
+                              }}
                               className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78"
                             >
-                              Add
+                              Add Node
                             </button>
                             <button
                               type="button"
-                              onClick={() => setIsCreatorOpen(false)}
+                              onClick={() =>
+                                setIsEditorOpen((current) => !current)
+                              }
+                              disabled={!selectedNode}
+                              className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
+                            >
+                              Edit Selected
+                            </button>
+                            <button
+                              type="button"
+                              onClick={duplicateSelected}
+                              disabled={selectedNode?.type !== "experience"}
+                              className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
+                            >
+                              Duplicate
+                            </button>
+                            <button
+                              type="button"
+                              onClick={deleteSelectedNode}
+                              disabled={!selectedNode}
+                              className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
+                            >
+                              Delete Node
+                            </button>
+                            <button
+                              type="button"
+                              onClick={deleteSelectedEdge}
+                              disabled={!selectedEdge}
+                              className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
+                            >
+                              Delete Edge
+                            </button>
+                            <button
+                              type="button"
+                              onClick={resetGraph}
                               className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78"
+                            >
+                              Reset
+                            </button>
+                          </div>
+                        </Panel>
+
+                        {isCreatorOpen ? (
+                          <Panel position="top-right">
+                            <div className="hidden rounded-[1.15rem] border border-white/[0.08] bg-[rgba(15,17,23,0.92)] p-3 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:mt-44 sm:block sm:w-[20rem] sm:p-4">
+                              <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/36">
+                                Node Creator
+                              </p>
+                              <div className="mt-4 space-y-3">
+                                <Field
+                                  label="Name"
+                                  value={newNodeName}
+                                  onChange={setNewNodeName}
+                                />
+                                <Field
+                                  label="Stage"
+                                  value={newNodeStage}
+                                  onChange={setNewNodeStage}
+                                />
+                                <div className="flex gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={createNode}
+                                    className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78"
+                                  >
+                                    Add
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setIsCreatorOpen(false)}
+                                    className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78"
+                                  >
+                                    Close
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </Panel>
+                        ) : null}
+                      </>
+                    ) : null}
+
+                    {selectedNode && isEditorOpen ? (
+                      <Panel position="bottom-center">
+                        <div className="mb-4 w-[min(96vw,52rem)] rounded-[1.25rem] border border-white/[0.08] bg-[rgba(14,16,24,0.92)] p-3 text-white/84 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-4">
+                          <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] pb-4">
+                            <div>
+                              <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/34">
+                                {selectedNode.type === "hub"
+                                  ? "Hub Editor"
+                                  : "Card Editor"}
+                              </p>
+                              <p className="mt-1 text-sm text-white/58">
+                                Compact contextual editing, without taking over
+                                the workspace.
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setIsEditorOpen(false)}
+                              className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-[0.64rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78"
                             >
                               Close
                             </button>
                           </div>
+
+                          {selectedNode.type === "hub" && selectedHub ? (
+                            <div className="mt-4 grid gap-4 md:grid-cols-2">
+                              <Field
+                                label="Label"
+                                value={selectedHub.label}
+                                onChange={(value) =>
+                                  updateSelectedNode({ label: value })
+                                }
+                              />
+                              <Field
+                                label="Subtitle"
+                                value={selectedHub.subtitle}
+                                onChange={(value) =>
+                                  updateSelectedNode({ subtitle: value })
+                                }
+                                multiline
+                              />
+                            </div>
+                          ) : null}
+
+                          {selectedNode.type === "experience" &&
+                          selectedCard ? (
+                            <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                              <Field
+                                label="Title"
+                                value={selectedCard.title}
+                                onChange={(value) =>
+                                  updateSelectedNode({ title: value })
+                                }
+                              />
+                              <Field
+                                label="Subtitle"
+                                value={selectedCard.subtitle}
+                                onChange={(value) =>
+                                  updateSelectedNode({ subtitle: value })
+                                }
+                              />
+                              <Field
+                                label="Period"
+                                value={selectedCard.period}
+                                onChange={(value) =>
+                                  updateSelectedNode({ period: value })
+                                }
+                              />
+                              <Field
+                                label="Role"
+                                value={selectedCard.role}
+                                onChange={(value) =>
+                                  updateSelectedNode({ role: value })
+                                }
+                              />
+                              <Field
+                                label="Location"
+                                value={selectedCard.location}
+                                onChange={(value) =>
+                                  updateSelectedNode({ location: value })
+                                }
+                              />
+                              <Field
+                                label="Stage"
+                                value={selectedCard.stage}
+                                onChange={(value) =>
+                                  updateSelectedNode({ stage: value })
+                                }
+                              />
+                              <Field
+                                label="Accent"
+                                value={selectedCard.accent}
+                                onChange={(value) =>
+                                  updateSelectedNode({ accent: value })
+                                }
+                              />
+                              <Field
+                                label="Summary"
+                                value={selectedCard.summary}
+                                onChange={(value) =>
+                                  updateSelectedNode({ summary: value })
+                                }
+                                multiline
+                              />
+                              <Field
+                                label="Stack tags"
+                                value={selectedCard.stack.join(", ")}
+                                onChange={(value) =>
+                                  updateSelectedNode({
+                                    stack: value
+                                      .split(",")
+                                      .map((item) => item.trim())
+                                      .filter(Boolean),
+                                  })
+                                }
+                                multiline
+                              />
+                            </div>
+                          ) : null}
                         </div>
-                      </div>
-                    </Panel>
-                  ) : null}
-                </>
-              ) : null}
-
-              {selectedNode && isEditorOpen ? (
-                <Panel position="bottom-center">
-                  <div className="mb-4 w-[min(96vw,52rem)] rounded-[1.25rem] border border-white/[0.08] bg-[rgba(14,16,24,0.92)] p-3 text-white/84 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-4">
-                    <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] pb-4">
-                      <div>
-                        <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/34">
-                          {selectedNode.type === "hub" ? "Hub Editor" : "Card Editor"}
-                        </p>
-                        <p className="mt-1 text-sm text-white/58">
-                          Compact contextual editing, without taking over the workspace.
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setIsEditorOpen(false)}
-                        className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-[0.64rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78"
-                      >
-                        Close
-                      </button>
-                    </div>
-
-                    {selectedNode.type === "hub" && selectedHub ? (
-                      <div className="mt-4 grid gap-4 md:grid-cols-2">
-                        <Field label="Label" value={selectedHub.label} onChange={(value) => updateSelectedNode({ label: value })} />
-                        <Field label="Subtitle" value={selectedHub.subtitle} onChange={(value) => updateSelectedNode({ subtitle: value })} multiline />
-                      </div>
+                      </Panel>
                     ) : null}
-
-                    {selectedNode.type === "experience" && selectedCard ? (
-                      <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                        <Field label="Title" value={selectedCard.title} onChange={(value) => updateSelectedNode({ title: value })} />
-                        <Field label="Subtitle" value={selectedCard.subtitle} onChange={(value) => updateSelectedNode({ subtitle: value })} />
-                        <Field label="Period" value={selectedCard.period} onChange={(value) => updateSelectedNode({ period: value })} />
-                        <Field label="Role" value={selectedCard.role} onChange={(value) => updateSelectedNode({ role: value })} />
-                        <Field label="Location" value={selectedCard.location} onChange={(value) => updateSelectedNode({ location: value })} />
-                        <Field label="Stage" value={selectedCard.stage} onChange={(value) => updateSelectedNode({ stage: value })} />
-                        <Field label="Accent" value={selectedCard.accent} onChange={(value) => updateSelectedNode({ accent: value })} />
-                        <Field label="Summary" value={selectedCard.summary} onChange={(value) => updateSelectedNode({ summary: value })} multiline />
-                        <Field
-                          label="Stack tags"
-                          value={selectedCard.stack.join(", ")}
-                          onChange={(value) =>
-                            updateSelectedNode({
-                              stack: value
-                                .split(",")
-                                .map((item) => item.trim())
-                                .filter(Boolean),
-                            })
-                          }
-                          multiline
-                        />
-                      </div>
-                    ) : null}
-                  </div>
-                </Panel>
-              ) : null}
-            </ReactFlow>
+                  </ReactFlow>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <style jsx>{`
-        @media (max-width: 639px) {
-          .experience-stage {
-            height: 34rem;
-          }
 
-          .experience-scene {
-            transform: scale(0.84);
-            transform-origin: top center;
-            width: 122%;
-            left: -11%;
-            top: 0;
+      <style jsx>{`
+        .experience-scroll-shell {
+          overflow: hidden;
+        }
+
+        .experience-scroll-track {
+          width: 100%;
+        }
+
+        .experience-stage {
+          height: 58rem;
+        }
+
+        .experience-scene {
+          inset: 0;
+        }
+
+        @media (max-width: 1023px) {
+          .experience-stage {
+            height: 48rem;
           }
         }
 
-        @media (min-width: 640px) and (max-width: 1023px) {
+        @media (max-width: 767px) {
+          .experience-scroll-shell {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+
+          .experience-scroll-shell::-webkit-scrollbar {
+            display: none;
+          }
+
+          .experience-scroll-track {
+            width: 980px;
+            min-width: 980px;
+          }
+
           .experience-stage {
-            height: 45rem;
+            height: 46rem;
           }
 
           .experience-scene {
-            transform: scale(0.92);
-            transform-origin: top center;
-            width: 110%;
-            left: -5%;
-            top: 0;
+            inset: 0;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .experience-scroll-track {
+            width: 960px;
+            min-width: 960px;
+          }
+
+          .experience-stage {
+            height: 43rem;
           }
         }
       `}</style>
     </section>
-  );
-}
-
-function ToolbarButton({
-  children,
-  onClick,
-  disabled = false,
-}: {
-  children: React.ReactNode;
-  onClick: () => void;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
-    >
-      {children}
-    </button>
   );
 }
 
@@ -910,7 +1053,9 @@ function Field({
 }) {
   return (
     <label className="block space-y-2">
-      <span className="text-[0.66rem] uppercase tracking-[0.22em] text-white/36">{label}</span>
+      <span className="text-[0.66rem] uppercase tracking-[0.22em] text-white/36">
+        {label}
+      </span>
       {multiline ? (
         <textarea
           value={value}
