@@ -931,7 +931,7 @@ export function SkillsGlobe() {
         <div className="globe-ring-outer pointer-events-none absolute h-[24rem] w-[24rem] rounded-full border border-[#6c78ff]/12 sm:h-[24rem] sm:w-[24rem] lg:h-[29rem] lg:w-[29rem]" />
         <div className="globe-ring-inner pointer-events-none absolute h-[15rem] w-[24rem] rounded-full border border-[#8890ff]/12 opacity-40 sm:h-[15rem] sm:w-[24rem] lg:h-[18rem] lg:w-[29rem]" />
 
-        <div className="globe-scene absolute left-1/2 top-1/2 h-[38rem] w-[54rem] -translate-x-1/2 -translate-y-1/2 sm:h-full sm:w-full">
+        <div className="globe-scene absolute left-1/2 top-[48%] h-[38rem] w-[54rem] -translate-x-1/2 -translate-y-1/2 sm:top-1/2 sm:h-full sm:w-full">
           <GlobeOverlay overlay={overlay} edges={lattice.edges} speed={speed} />
         </div>
 
@@ -939,7 +939,7 @@ export function SkillsGlobe() {
       </div>
       </div>
 
-      <div className="mx-auto mt-6 max-w-[30rem] px-1 sm:mt-8">
+      <div className="mx-auto mt-3 max-w-[30rem] px-1 sm:mt-8">
         <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-[0.28em] text-white/42">
           <span>Speed</span>
           <span className="text-white/65">{speed.toFixed(0)}</span>
@@ -1004,32 +1004,32 @@ export function SkillsGlobe() {
 
         @media (max-width: 639px) {
           .globe-stage-frame {
-            height: 31rem;
+            height: 24.5rem;
             overflow: visible;
           }
 
           .globe-stage {
-            height: 31rem;
+            height: 24.5rem;
           }
 
           .globe-scene {
-            transform: translate(-50%, -50%) scale(0.66);
+            transform: translate(-50%, -50%) scale(0.58);
             transform-origin: center center;
           }
         }
 
         @media (min-width: 640px) and (max-width: 1023px) {
           .globe-stage-frame {
-            height: 35rem;
+            height: 31rem;
             overflow: visible;
           }
 
           .globe-stage {
-            height: 35rem;
+            height: 31rem;
           }
 
           .globe-scene {
-            transform: translate(-50%, -50%) scale(0.82);
+            transform: translate(-50%, -50%) scale(0.76);
             transform-origin: center center;
           }
         }

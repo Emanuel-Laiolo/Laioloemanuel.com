@@ -107,11 +107,11 @@ export function SiteNavbar({
 
   return (
     <header className="sticky top-0 z-30">
-      <div className="flex justify-center px-4 pt-4 sm:px-10 lg:px-16">
+      <div className="flex justify-center px-4 pt-3 sm:px-10 sm:pt-4 lg:px-16">
         <nav
           ref={navRef}
           aria-label="Primary"
-          className="site-nav relative inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-full px-2 py-2 md:inline-flex"
+          className="site-nav relative inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-full px-1.5 py-1.5 md:px-2 md:py-2"
         >
           {navSize.width > 0 && (
             <svg
@@ -171,7 +171,7 @@ export function SiteNavbar({
                     behavior: "smooth",
                   });
                 }}
-                className={`relative z-10 rounded-full px-5 py-2.5 text-sm font-medium transition ${
+                className={`relative z-10 rounded-full px-4 py-2 text-[0.88rem] font-medium transition sm:px-5 sm:py-2.5 sm:text-sm ${
                   isActive
                     ? "bg-white/[0.08] text-[var(--foreground)]"
                     : "text-[var(--foreground-subtle)] hover:text-[var(--foreground)]"

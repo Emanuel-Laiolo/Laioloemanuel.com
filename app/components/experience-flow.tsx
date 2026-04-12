@@ -630,7 +630,7 @@ function ExperienceFlowInner() {
             <div className="flex items-center gap-2" />
           </div>
 
-          <div className="experience-stage relative h-[36rem] w-full overflow-hidden bg-[#111318] sm:h-[48rem] lg:h-[58rem]">
+          <div className="experience-stage relative h-[38rem] w-full overflow-hidden bg-[#111318] sm:h-[48rem] lg:h-[58rem]">
             <div className="experience-scene absolute inset-0">
             <ReactFlow<FlowNode, FlowEdge>
               nodes={nodes}
@@ -691,7 +691,7 @@ function ExperienceFlowInner() {
                 showInteractive={false}
               />
               <Panel position="top-left">
-                <div className="w-[min(52vw,16rem)] rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-3 py-2.5 text-xs leading-5 text-white/62 backdrop-blur-xl sm:w-[min(100%,26rem)] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
+                <div className="hidden rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-3 py-2.5 text-xs leading-5 text-white/62 backdrop-blur-xl sm:block sm:w-[min(100%,26rem)] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
                   Select a node to reveal its information. You can also move nodes, create connections, duplicate items, or reset the canvas from the panel on the right.
                 </div>
               </Panel>
@@ -699,7 +699,7 @@ function ExperienceFlowInner() {
               {isEditMode ? (
                 <>
                   <Panel position="top-right">
-                    <div className="flex w-[12.75rem] flex-col gap-2 rounded-[1rem] border border-white/[0.08] bg-[rgba(15,17,23,0.88)] p-3 backdrop-blur-xl sm:w-[17.5rem] sm:p-4">
+                    <div className="hidden flex-col gap-2 rounded-[1rem] border border-white/[0.08] bg-[rgba(15,17,23,0.88)] p-3 backdrop-blur-xl sm:flex sm:w-[17.5rem] sm:p-4">
                       <button
                         type="button"
                         onClick={() => {
@@ -754,7 +754,7 @@ function ExperienceFlowInner() {
 
                   {isCreatorOpen ? (
                     <Panel position="top-right">
-                      <div className="mt-32 w-[13rem] rounded-[1.15rem] border border-white/[0.08] bg-[rgba(15,17,23,0.92)] p-3 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:mt-44 sm:w-[20rem] sm:p-4">
+                      <div className="hidden rounded-[1.15rem] border border-white/[0.08] bg-[rgba(15,17,23,0.92)] p-3 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:mt-44 sm:block sm:w-[20rem] sm:p-4">
                         <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/36">Node Creator</p>
                         <div className="mt-4 space-y-3">
                           <Field label="Name" value={newNodeName} onChange={setNewNodeName} />
@@ -846,14 +846,14 @@ function ExperienceFlowInner() {
       <style jsx>{`
         @media (max-width: 639px) {
           .experience-stage {
-            height: 33rem;
+            height: 34rem;
           }
 
           .experience-scene {
-            transform: scale(0.7);
+            transform: scale(0.84);
             transform-origin: top center;
-            width: 138%;
-            left: -19%;
+            width: 122%;
+            left: -11%;
             top: 0;
           }
         }
@@ -864,10 +864,10 @@ function ExperienceFlowInner() {
           }
 
           .experience-scene {
-            transform: scale(0.88);
+            transform: scale(0.92);
             transform-origin: top center;
-            width: 116%;
-            left: -8%;
+            width: 110%;
+            left: -5%;
             top: 0;
           }
         }

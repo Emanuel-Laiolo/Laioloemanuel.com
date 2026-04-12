@@ -236,7 +236,7 @@ export function IntroHero() {
     <section
       ref={rootRef}
       id="hero"
-      className="flex min-h-[100svh] scroll-mt-28 items-center overflow-x-clip border-b border-[var(--border)] py-12 sm:py-20"
+      className="flex min-h-[100svh] scroll-mt-28 items-start overflow-x-clip border-b border-[var(--border)] pt-24 pb-10 sm:items-center sm:py-20"
     >
       <div className="mx-auto flex w-full max-w-[76rem] items-center justify-center px-4 sm:px-10 lg:px-0">
         <div className="hero-scene-frame w-full">
@@ -392,29 +392,29 @@ export function IntroHero() {
 
         @media (max-width: 639px) {
           .hero-scene-frame {
-            height: 58rem;
+            height: 51rem;
           }
 
           .hero-scene {
-            transform: scale(0.76);
-            transform-origin: top center;
-            width: 132%;
-            margin-left: -16%;
-            margin-top: 0.25rem;
+            transform: none;
+            width: 100%;
+            margin-left: 0;
+            margin-top: 0;
+            gap: 2rem;
           }
         }
 
         @media (min-width: 640px) and (max-width: 1023px) {
           .hero-scene-frame {
-            height: 54rem;
+            height: auto;
           }
 
           .hero-scene {
-            transform: scale(0.9);
+            transform: scale(0.94);
             transform-origin: top center;
-            width: 112%;
-            margin-left: -6%;
-            margin-top: 0.25rem;
+            width: 108%;
+            margin-left: -4%;
+            margin-top: 0;
           }
         }
       `}</style>
