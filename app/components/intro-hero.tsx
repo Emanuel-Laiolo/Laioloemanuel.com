@@ -106,7 +106,6 @@ export function IntroHero() {
             opacity: 1,
           }
         );
-
         return;
       }
 
@@ -389,7 +388,7 @@ export function IntroHero() {
     <section
       ref={rootRef}
       id="hero"
-      className="relative flex min-h-[100svh] scroll-mt-28 items-start overflow-x-clip border-b border-[var(--border)] pt-[calc(7rem+env(safe-area-inset-top))] pb-12 sm:items-center sm:py-20"
+      className="relative flex min-h-[100svh] scroll-mt-28 items-start overflow-x-clip border-b border-[var(--border)] pt-[calc(7.4rem+env(safe-area-inset-top))] pb-12 sm:items-center sm:py-20"
     >
       <div className="mx-auto flex w-full max-w-[76rem] items-center justify-center px-5 sm:px-10 lg:px-0">
         <div className="hero-scene-frame w-full">
@@ -405,7 +404,7 @@ export function IntroHero() {
               <div className="space-y-6">
                 <h1
                   aria-label="Emanuel Laiolo"
-                  className="text-[3.2rem] font-semibold leading-[0.9] tracking-[-0.09em] text-[var(--foreground)] sm:text-[5.2rem] lg:text-[6.4rem]"
+                  className="text-[3rem] font-semibold leading-[0.9] tracking-[-0.09em] text-[var(--foreground)] sm:text-[5.2rem] lg:text-[6.4rem]"
                 >
                   <span className="block">
                     {firstNameLetters.map((item, index) => (
@@ -440,7 +439,7 @@ export function IntroHero() {
 
                 <p
                   ref={statementRef}
-                  className="max-w-[39rem] text-[1.08rem] leading-[1.6] tracking-[-0.025em] text-[var(--foreground)]/92 sm:text-[1.7rem] sm:leading-10"
+                  className="max-w-[39rem] text-[1.06rem] leading-[1.6] tracking-[-0.025em] text-[var(--foreground)]/92 sm:text-[1.7rem] sm:leading-10"
                 >
                   Building clean web products, practical tools, and modern digital
                   experiences.
@@ -448,7 +447,7 @@ export function IntroHero() {
 
                 <p
                   ref={paragraphRef}
-                  className="max-w-[35rem] text-[0.98rem] leading-[1.72] text-[var(--foreground-muted)] sm:text-lg"
+                  className="max-w-[35rem] text-[0.96rem] leading-[1.72] text-[var(--foreground-muted)] sm:text-lg"
                 >
                   Programming Technician from UTN, based in Krakow, with
                   experience across web development, e-commerce, and software
@@ -550,31 +549,70 @@ export function IntroHero() {
           }
 
           .hero-scene {
-            transform: none;
+            position: relative;
+            display: block;
+            min-height: 50rem;
             width: 100%;
             margin: 0;
-            gap: 2.5rem;
           }
 
           .hero-copy {
+            position: relative;
+            z-index: 2;
             max-width: none;
+            width: 100%;
+            padding-right: 2.5rem;
           }
 
           .hero-visual-shell {
-            margin-top: 0.25rem;
+            position: absolute;
+            right: -0.4rem;
+            top: 18.25rem;
+            z-index: 1;
+            margin: 0;
+            height: 29rem;
+            width: min(68vw, 22rem);
+            max-width: none;
           }
 
           .hero-cell {
-            right: 3%;
-            top: 4%;
-            width: 90%;
-            height: 87%;
+            right: 1%;
+            top: 2.5%;
+            width: 94%;
+            height: 91%;
           }
 
           .hero-portrait {
-            right: 7%;
-            inset-y: 8%;
-            width: 79%;
+            right: 6%;
+            inset-y: 7%;
+            width: 82%;
+          }
+        }
+
+        @media (max-width: 479px) {
+          .hero-scene {
+            min-height: 47.5rem;
+          }
+
+          .hero-copy {
+            padding-right: 1.6rem;
+          }
+
+          .hero-visual-shell {
+            top: 19.5rem;
+            right: -0.9rem;
+            height: 27rem;
+            width: min(72vw, 21rem);
+          }
+
+          .hero-cell {
+            width: 96%;
+            height: 92%;
+          }
+
+          .hero-portrait {
+            right: 6%;
+            width: 83%;
           }
         }
 
