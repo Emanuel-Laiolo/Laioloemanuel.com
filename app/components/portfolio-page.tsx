@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { BackgroundEnvironment } from "./background-environment";
 import { IntroHero } from "./intro-hero";
+import { ContactSection } from "./contact-section";
 import { ExperienceFlow } from "./experience-flow";
 import { SiteNavbar } from "./site-navbar";
 import { SkillsGlobe } from "./skills-globe";
@@ -137,88 +138,6 @@ function SkillsSection() {
 
 function ProjectsSection() {
   return <ExperienceFlow />;
-}
-
-function ContactSection() {
-  return (
-    <section id="contact" className="scroll-mt-28 py-24 sm:py-32 lg:py-40">
-      <div className="rounded-[1.6rem] border border-white/[0.06] bg-[linear-gradient(180deg,rgba(8,10,16,0.82),rgba(4,5,8,0.98))] px-4 py-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)] sm:rounded-[2.2rem] sm:px-10 sm:py-12 lg:px-14 lg:py-14">
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(20rem,24rem)] lg:items-stretch lg:gap-10">
-          <div className="flex flex-col justify-between rounded-[1.3rem] border border-white/[0.05] bg-[linear-gradient(180deg,rgba(255,255,255,0.025),rgba(255,255,255,0.01))] p-5 sm:rounded-[1.8rem] sm:p-8 lg:p-10">
-            <div className="space-y-6">
-              <p className="text-[0.72rem] font-medium uppercase tracking-[0.34em] text-[var(--foreground-subtle)]">
-                Contact
-              </p>
-              <h2 className="max-w-3xl text-[2.2rem] font-semibold tracking-[-0.05em] text-[var(--foreground)] sm:text-4xl lg:text-[3.2rem]">
-                Open to serious opportunities in software, product, and systems.
-              </h2>
-              <p className="max-w-2xl text-[1rem] leading-7 text-[var(--foreground-muted)] sm:text-lg sm:leading-8">
-                I’m looking for the kind of work where technical thinking,
-                execution, and long-term judgment actually matter. If you’re
-                hiring, building, or exploring a strong fit, the best way to
-                reach me is by email or LinkedIn.
-              </p>
-            </div>
-
-            <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap">
-              <a
-                href="mailto:Emalaiolo@gmail.com"
-                className="inline-flex items-center justify-center rounded-full border border-white/[0.1] bg-white/[0.06] px-5 py-3 text-sm font-medium text-[var(--foreground)] transition hover:bg-white/[0.1]"
-              >
-                Send email
-              </a>
-              <a
-                href="https://www.linkedin.com/in/emanuel-laiolo-300b31313/"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-full border border-white/[0.08] px-5 py-3 text-sm font-medium text-[var(--foreground-muted)] transition hover:border-white/[0.14] hover:text-[var(--foreground)]"
-              >
-                View LinkedIn
-              </a>
-            </div>
-          </div>
-
-          <div className="grid gap-3 sm:gap-4">
-            <div className="rounded-[1.5rem] border border-white/[0.07] bg-[rgba(255,255,255,0.025)] p-6 sm:p-7">
-              <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[var(--foreground-subtle)]">
-                Email
-              </p>
-              <a
-                href="mailto:Emalaiolo@gmail.com"
-                className="mt-4 block break-all text-[1.05rem] font-medium text-[var(--foreground)] transition hover:text-white/72"
-              >
-                Emalaiolo@gmail.com
-              </a>
-            </div>
-
-            <div className="rounded-[1.5rem] border border-white/[0.07] bg-[rgba(255,255,255,0.025)] p-6 sm:p-7">
-              <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[var(--foreground-subtle)]">
-                LinkedIn
-              </p>
-              <a
-                href="https://www.linkedin.com/in/emanuel-laiolo-300b31313/"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 block break-words text-base leading-7 text-[var(--foreground-muted)] transition hover:text-white/78"
-              >
-                linkedin.com/in/emanuel-laiolo-300b31313
-              </a>
-            </div>
-
-            <div className="rounded-[1.5rem] border border-white/[0.07] bg-[rgba(255,255,255,0.02)] p-6 sm:p-7">
-              <p className="text-[0.68rem] uppercase tracking-[0.28em] text-[var(--foreground-subtle)]">
-                Focus
-              </p>
-              <p className="mt-4 text-base leading-7 text-[var(--foreground-muted)]">
-                Software development, technical product work, systems thinking,
-                and execution-heavy roles with real ownership.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
 }
 
 export function PortfolioPage() {

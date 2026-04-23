@@ -91,6 +91,52 @@ select {
   font: inherit;
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: rgba(154, 154, 148, 0.56);
+}
+
+.contact-input {
+  width: 100%;
+  border-radius: 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.035),
+    rgba(255, 255, 255, 0.018)
+  );
+  padding: 0.95rem 1rem;
+  color: var(--foreground);
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.contact-input:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.042),
+    rgba(255, 255, 255, 0.02)
+  );
+}
+
+.contact-input:focus {
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 0 6px rgba(255, 255, 255, 0.025);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.024)
+  );
+}
+
 button {
   border: 0;
   background: transparent;
