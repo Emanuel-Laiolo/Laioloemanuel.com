@@ -24,7 +24,7 @@ const lastNameLetters = [
   { letter: "o", x: -56, y: -72, rotate: -6 },
 ] as const;
 
-const metaItems = ["Based in Krakow", "Open to relocation", "English fluent"];
+const metaItems = ["Based in Krakow", "Open to IT roles", "English fluent"];
 
 export function IntroHero() {
   const rootRef = useRef<HTMLElement | null>(null);
@@ -180,23 +180,27 @@ export function IntroHero() {
         "-=0.22"
       );
 
-      timeline.to(visual, { x: 0, opacity: 1, duration: 0.38 }, "-=0.26");
+      timeline.to(meta, { y: 0, opacity: 1, duration: 0.28, stagger: 0.04 }, "-=0.18");
+
+      timeline.to(visual, { x: 0, opacity: 1, duration: 0.38 }, "-=0.3");
       timeline.to(cell, { scale: 1, opacity: 1, rotate: 0, duration: 0.54 }, "<");
+
       timeline.to(
         [membraneOuter, membraneInner, membraneSheen],
         { opacity: 1, scale: 1, duration: 0.62, stagger: 0.06 },
         "-=0.44"
       );
+
       timeline.to(
         portrait,
         { y: 0, scale: 1, opacity: 1, duration: 0.58 },
         "-=0.42"
       );
-      timeline.to(meta, { y: 0, opacity: 1, duration: 0.28, stagger: 0.04 }, "-=0.22");
+
       timeline.to(
         ctas,
         { y: 0, opacity: 1, scale: 1, duration: 0.28, stagger: 0.05 },
-        "-=0.14"
+        "-=0.18"
       );
 
       const loopingTweens: gsap.core.Tween[] = [];
@@ -388,17 +392,17 @@ export function IntroHero() {
     <section
       ref={rootRef}
       id="hero"
-      className="relative flex min-h-[100svh] scroll-mt-28 items-start overflow-x-clip border-b border-[var(--border)] pt-[calc(7.4rem+env(safe-area-inset-top))] pb-12 sm:items-center sm:py-20"
+      className="relative flex min-h-[100svh] scroll-mt-28 items-start overflow-x-clip border-b border-[var(--border)] pt-[calc(6.6rem+env(safe-area-inset-top))] pb-12 sm:items-center sm:py-20"
     >
       <div className="mx-auto flex w-full max-w-[76rem] items-center justify-center px-5 sm:px-10 lg:px-0">
         <div className="hero-scene-frame w-full">
           <div className="hero-scene grid w-full items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(21rem,25rem)] md:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(30rem,36rem)] xl:grid-cols-[minmax(0,1fr)_minmax(34rem,40rem)] xl:gap-10">
-            <div className="hero-copy max-w-[42rem] space-y-8 lg:space-y-10">
+            <div className="hero-copy max-w-[43rem] space-y-7 lg:space-y-8">
               <p
                 ref={roleRef}
-                className="text-[0.68rem] font-medium uppercase tracking-[0.38em] text-[var(--foreground-soft)] sm:text-[0.72rem]"
+                className="text-[0.68rem] font-semibold uppercase tracking-[0.38em] text-[var(--foreground-soft)] sm:text-[0.72rem]"
               >
-                Software Developer
+                University Programming Student · Technology Enthusiast
               </p>
 
               <div className="space-y-6">
@@ -439,23 +443,24 @@ export function IntroHero() {
 
                 <p
                   ref={statementRef}
-                  className="max-w-[39rem] text-[1.06rem] leading-[1.6] tracking-[-0.025em] text-[var(--foreground)]/92 sm:text-[1.7rem] sm:leading-10"
+                  className="max-w-[40rem] text-[1.12rem] leading-[1.55] tracking-[-0.03em] text-[var(--foreground)]/94 sm:text-[1.72rem] sm:leading-10"
                 >
-                  Building clean web products, practical tools, and modern digital
-                  experiences.
+                  As a child I built with Lego. Today I build with code.
                 </p>
 
                 <p
                   ref={paragraphRef}
-                  className="max-w-[35rem] text-[0.96rem] leading-[1.72] text-[var(--foreground-muted)] sm:text-lg"
+                  className="max-w-[37rem] text-[0.96rem] leading-[1.78] text-[var(--foreground-muted)] sm:text-lg"
                 >
-                  Programming Technician from UTN, based in Krakow, with
-                  experience across web development, e-commerce, and software
-                  products, and a growing focus on AI-assisted workflows.
+                  I’m interested in technology that has a real impact. I’m
+                  studying programming at UTN and building practical projects
+                  across web development, ecommerce, digital tools, and software
+                  ideas. I enjoy algorithms, problem solving, programming logic,
+                  good communication, discipline, and continuous learning.
                 </p>
               </div>
 
-              <ul className="flex flex-wrap gap-x-6 gap-y-3 pt-2 sm:gap-x-8">
+              <ul className="flex flex-wrap gap-x-6 gap-y-3 pt-1 sm:gap-x-8">
                 {metaItems.map((item, index) => (
                   <li
                     key={item}
@@ -485,10 +490,10 @@ export function IntroHero() {
                   ref={(node) => {
                     ctaRef.current[1] = node;
                   }}
-                  href="/resume.pdf"
+                  href="#contact"
                   className="inline-flex w-fit min-h-12 shrink-0 items-center justify-center whitespace-nowrap rounded-full border border-[var(--border-strong)] px-7 text-sm font-medium text-[var(--foreground)] transition hover:border-white/40 hover:bg-white/[0.03]"
                 >
-                  Resume
+                  Contact Me
                 </a>
               </div>
             </div>
@@ -589,13 +594,19 @@ export function IntroHero() {
           }
         }
 
-        @media (max-width: 479px) {
-          .hero-scene {
-            min-height: 47.5rem;
+        @media (max-width: 639px) {
+          .hero-copy {
+            padding-right: 0;
           }
 
-          .hero-copy {
-            padding-right: 1.6rem;
+          .hero-visual-shell {
+            opacity: 0.78;
+          }
+        }
+
+        @media (max-width: 479px) {
+          .hero-scene {
+            min-height: 48rem;
           }
 
           .hero-visual-shell {

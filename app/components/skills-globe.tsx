@@ -61,17 +61,23 @@ const RAW_SKILLS = [
   { label: "Docker", short: "DK", color: "#4d9fff", phi: 2.4, theta: 5.82 },
   { label: "HTML", short: "HT", color: "#e46d43", phi: 0.56, theta: 5.54 },
   { label: "CSS", short: "CS", color: "#5b8df1", phi: 1.22, theta: 6.02 },
+  { label: "Stripe", short: "ST", color: "#635bff", phi: 1.54, theta: 3.94 },
+  { label: "Cloudflare", short: "CF", color: "#f38020", phi: 2.28, theta: 0.22 },
+  { label: "Terminal", short: "TR", color: "#4eaa25", phi: 0.72, theta: 2.72 },
   { label: "Operating Systems", short: "OS", color: "#9aa3b2", phi: 2.72, theta: 0.54 },
 ] as const;
 
 const SPHERE_RADIUS = 184;
 const PROJECTION_DISTANCE = 430;
 
-const BASE_AUTO_VELOCITY_X = 0.0028;
-const BASE_AUTO_VELOCITY_Y = -0.0036;
+const BASE_AUTO_VELOCITY_X = 0.0034;
+const BASE_AUTO_VELOCITY_Y = -0.0042;
 
 const MIN_SPEED = 1;
-const MAX_SPEED = 50;
+const MAX_SPEED = 60;
+
+const LIGHTNING_START_SPEED = 24;
+const ACCELERATOR_START_SPEED = 34;
 
 const VIEWBOX_WIDTH = 864;
 const VIEWBOX_HEIGHT = 608;
@@ -241,7 +247,7 @@ function createLightningPath(
   chaos: number
 ) {
   const points: { x: number; y: number }[] = [];
-  const segments = 7 + Math.floor(chaos * 5);
+  const segments = 6 + Math.floor(chaos * 4);
 
   const dx = to.x - from.x;
   const dy = to.y - from.y;
@@ -253,7 +259,7 @@ function createLightningPath(
   for (let i = 0; i <= segments; i += 1) {
     const t = i / segments;
     const edgeFade = Math.sin(Math.PI * t);
-    const spread = (5 + chaos * 18) * edgeFade;
+    const spread = (4 + chaos * 15) * edgeFade;
 
     const wave =
       Math.sin(seed * 2.2 + t * 8.5) * 0.5 +
@@ -277,12 +283,12 @@ function buildLightningBolts(
   chaos: number,
   rotationSeed: number
 ): LightningBolt[] {
-  if (speed < 18 || projectedLattice.length === 0) return [];
+  if (speed < LIGHTNING_START_SPEED || projectedLattice.length === 0) return [];
 
-  const frontNodes = projectedLattice.filter((node) => node.depth > 0.5);
+  const frontNodes = projectedLattice.filter((node) => node.depth > 0.52);
   if (frontNodes.length < 5) return [];
 
-  const boltCount = Math.min(9, Math.max(2, Math.floor((speed - 12) / 4)));
+  const boltCount = Math.min(6, Math.max(2, Math.floor((speed - 18) / 7)));
   const bolts: LightningBolt[] = [];
 
   for (let i = 0; i < boltCount; i += 1) {
@@ -303,13 +309,13 @@ function buildLightningBolts(
         { x: candidate.screenX, y: candidate.screenY }
       );
 
-      if (d < 55 || d > 240) continue;
+      if (d < 55 || d > 230) continue;
 
-      const preferred = lerp(90, 180, chaos);
+      const preferred = lerp(90, 172, chaos);
       const score =
         -Math.abs(d - preferred) +
-        candidate.depth * 38 +
-        Math.sin(rotationSeed * 1.35 + d * 0.013 + i * 0.7) * 12;
+        candidate.depth * 34 +
+        Math.sin(rotationSeed * 1.35 + d * 0.013 + i * 0.7) * 10;
 
       if (score > bestScore) {
         bestScore = score;
@@ -328,19 +334,19 @@ function buildLightningBolts(
     );
 
     const branches: { x: number; y: number }[][] = [];
-    const branchCount = chaos > 0.72 ? 3 : chaos > 0.38 ? 2 : 1;
+    const branchCount = chaos > 0.78 ? 2 : chaos > 0.48 ? 1 : 0;
 
     for (let branchIndex = 0; branchIndex < branchCount; branchIndex += 1) {
       const pivotIndex = Math.floor(
-        points.length * lerp(0.24, 0.76, (branchIndex + 1) / (branchCount + 1))
+        points.length * lerp(0.28, 0.72, (branchIndex + 1) / (branchCount + 1))
       );
       const pivot = points[pivotIndex];
       if (!pivot) continue;
 
       const angle = seed * (1.45 + branchIndex * 0.34) + branchIndex * 1.15;
       const branchTarget = {
-        x: pivot.x + Math.cos(angle) * lerp(18, 42, chaos),
-        y: pivot.y + Math.sin(angle) * lerp(16, 34, chaos),
+        x: pivot.x + Math.cos(angle) * lerp(16, 34, chaos),
+        y: pivot.y + Math.sin(angle) * lerp(14, 28, chaos),
       };
 
       branches.push(
@@ -348,7 +354,7 @@ function buildLightningBolts(
           pivot,
           branchTarget,
           seed + 1.8 + branchIndex,
-          Math.max(0.25, chaos * 0.72)
+          Math.max(0.25, chaos * 0.68)
         )
       );
     }
@@ -365,8 +371,8 @@ function buildLightningBolts(
           : i % 4 === 2
           ? "#8cf0ff"
           : "#9ab3ff",
-      alpha: 0.24 + chaos * 0.52,
-      width: 1.05 + chaos * 1.45,
+      alpha: 0.22 + chaos * 0.48,
+      width: 0.95 + chaos * 1.25,
     });
   }
 
@@ -377,9 +383,9 @@ function buildAcceleratorArcs(
   speed: number,
   rotationSeed: number
 ): AcceleratorArc[] {
-  if (speed < 26) return [];
+  if (speed < ACCELERATOR_START_SPEED) return [];
 
-  const energy = clamp((speed - 26) / 24, 0, 1);
+  const energy = clamp((speed - ACCELERATOR_START_SPEED) / 26, 0, 1);
   const count = 2 + Math.round(energy * 2);
 
   const arcs: AcceleratorArc[] = [];
@@ -393,7 +399,8 @@ function buildAcceleratorArcs(
     arcs.push({
       id: `arc-${i}`,
       d: createEllipseArcPath(CENTER_X, CENTER_Y, rx, ry, start, start + sweep),
-      rotation: rotationSeed * 18 + i * (180 / count) + Math.sin(rotationSeed + i) * 6,
+      rotation:
+        rotationSeed * 18 + i * (180 / count) + Math.sin(rotationSeed + i) * 6,
       color: i % 3 === 0 ? "#ffffff" : i % 3 === 1 ? "#9eb4ff" : "#76dcff",
       alpha: lerp(0.06, 0.15, energy) * (1 - i * 0.1),
       width: lerp(1, 1.8, energy) - i * 0.06,
@@ -422,10 +429,11 @@ const GlobeOverlay = memo(function GlobeOverlay({
     reactorPhase,
   } = overlay;
 
-  const hideLabel = speed > 18;
-  const compressBadges = speed > 34;
-  const reactorEnergy = clamp((speed - 16) / 34, 0, 1);
-  const pulse = 0.88 + ((Math.sin(reactorPhase * 2.2) + 1) / 2) * 0.42 * reactorEnergy;
+  const hideLabel = speed > 22;
+  const compressBadges = speed > 38;
+  const reactorEnergy = clamp((speed - 18) / 42, 0, 1);
+  const pulse =
+    0.88 + ((Math.sin(reactorPhase * 2.2) + 1) / 2) * 0.42 * reactorEnergy;
 
   return (
     <>
@@ -444,7 +452,7 @@ const GlobeOverlay = memo(function GlobeOverlay({
           </radialGradient>
 
           <filter id="lightning-glow" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="2.8" result="blur" />
+            <feGaussianBlur stdDeviation="2.6" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -452,7 +460,7 @@ const GlobeOverlay = memo(function GlobeOverlay({
           </filter>
 
           <filter id="arc-glow" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="3.6" result="blur" />
+            <feGaussianBlur stdDeviation="3.2" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -460,7 +468,7 @@ const GlobeOverlay = memo(function GlobeOverlay({
           </filter>
 
           <filter id="core-glow" x="-80%" y="-80%" width="260%" height="260%">
-            <feGaussianBlur stdDeviation="18" result="blur" />
+            <feGaussianBlur stdDeviation="16" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -476,6 +484,7 @@ const GlobeOverlay = memo(function GlobeOverlay({
           opacity={0.18 + reactorEnergy * 0.14}
           filter="url(#core-glow)"
         />
+
         <circle
           cx={CENTER_X}
           cy={CENTER_Y}
@@ -545,7 +554,8 @@ const GlobeOverlay = memo(function GlobeOverlay({
           if (!from || !to) return null;
 
           const alpha = clamp(
-            ((from.alpha + to.alpha) / 2) * (0.22 + Math.min(0.16, speed / 180)),
+            ((from.alpha + to.alpha) / 2) *
+              (0.22 + Math.min(0.16, speed / 180)),
             0,
             0.92
           );
@@ -585,27 +595,29 @@ const GlobeOverlay = memo(function GlobeOverlay({
                 fill="none"
                 stroke={bolt.color}
                 strokeOpacity={bolt.alpha * 0.18}
-                strokeWidth={bolt.width * 4.4}
+                strokeWidth={bolt.width * 4}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 filter="url(#lightning-glow)"
               />
+
               <polyline
                 points={points}
                 fill="none"
                 stroke={bolt.color}
-                strokeOpacity={bolt.alpha * 0.72}
-                strokeWidth={bolt.width * 1.9}
+                strokeOpacity={bolt.alpha * 0.68}
+                strokeWidth={bolt.width * 1.7}
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 filter="url(#lightning-glow)"
               />
+
               <polyline
                 points={points}
                 fill="none"
                 stroke="#ffffff"
                 strokeOpacity={bolt.alpha}
-                strokeWidth={Math.max(0.7, bolt.width * 0.72)}
+                strokeWidth={Math.max(0.65, bolt.width * 0.62)}
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
@@ -621,18 +633,19 @@ const GlobeOverlay = memo(function GlobeOverlay({
                       points={branchPoints}
                       fill="none"
                       stroke={bolt.color}
-                      strokeOpacity={bolt.alpha * 0.12}
-                      strokeWidth={bolt.width * 2.2}
+                      strokeOpacity={bolt.alpha * 0.1}
+                      strokeWidth={bolt.width * 2}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       filter="url(#lightning-glow)"
                     />
+
                     <polyline
                       points={branchPoints}
                       fill="none"
                       stroke="#eaf1ff"
-                      strokeOpacity={bolt.alpha * 0.8}
-                      strokeWidth={Math.max(0.55, bolt.width * 0.48)}
+                      strokeOpacity={bolt.alpha * 0.76}
+                      strokeWidth={Math.max(0.5, bolt.width * 0.42)}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
@@ -648,7 +661,7 @@ const GlobeOverlay = memo(function GlobeOverlay({
         return (
           <div
             key={node.label}
-            className="absolute left-1/2 top-1/2"
+            className="absolute left-1/2 top-1/2 will-change-transform"
             style={{
               transform: `translate3d(${node.screenX}px, ${node.screenY}px, 0) scale(${node.scale})`,
               opacity: node.alpha,
@@ -659,7 +672,11 @@ const GlobeOverlay = memo(function GlobeOverlay({
               <div
                 className={`flex items-center rounded-full border border-white/[0.08] bg-[rgba(7,9,15,0.68)] backdrop-blur-[8px] transition-[padding,gap,background,border-color] duration-200 ${
                   hideLabel ? "gap-0 px-2.5 py-2" : "gap-3 px-3 py-2"
-                } ${compressBadges ? "border-white/[0.12] bg-[rgba(7,9,15,0.48)]" : ""}`}
+                } ${
+                  compressBadges
+                    ? "border-white/[0.12] bg-[rgba(7,9,15,0.48)]"
+                    : ""
+                }`}
                 style={{
                   boxShadow: compressBadges
                     ? "0 0 18px rgba(120,145,255,0.18), 0 6px 18px rgba(0,0,0,0.18)"
@@ -670,7 +687,9 @@ const GlobeOverlay = memo(function GlobeOverlay({
                   className="flex h-8 w-8 items-center justify-center rounded-full text-[0.68rem] font-semibold tracking-[0.12em] text-white"
                   style={{
                     background: `linear-gradient(135deg, ${node.color}, rgba(255,255,255,0.12))`,
-                    boxShadow: compressBadges ? `0 0 16px ${node.color}55` : undefined,
+                    boxShadow: compressBadges
+                      ? `0 0 16px ${node.color}55`
+                      : undefined,
                   }}
                 >
                   {node.short}
@@ -703,7 +722,7 @@ export function SkillsGlobe() {
   const initialRotationX = -0.34;
   const initialRotationY = 0.46;
 
-  const [speed, setSpeed] = useState(prefersReducedMotion ? 8 : 15);
+  const [speed, setSpeed] = useState(prefersReducedMotion ? 8 : 18);
   const [overlay, setOverlay] = useState<OverlayState>(() => ({
     projectedSkills: skills
       .map((skill) => projectNode(skill, initialRotationX, initialRotationY))
@@ -732,15 +751,39 @@ export function SkillsGlobe() {
   const velocityYRef = useRef(BASE_AUTO_VELOCITY_Y);
 
   const frameCounterRef = useRef(0);
-  const overlaySpeedRef = useRef(speed);
+  const targetSpeedRef = useRef(speed);
+  const smoothSpeedRef = useRef(speed);
   const velocityMultiplierRef = useRef(1.6);
 
   const speedRatio = clamp((speed - MIN_SPEED) / (MAX_SPEED - MIN_SPEED), 0, 1);
-  const highEnergyRatio = clamp((speed - 18) / 32, 0, 1);
+  const highEnergyRatio = clamp((speed - 20) / 40, 0, 1);
 
   useEffect(() => {
-    overlaySpeedRef.current = speed;
-    velocityMultiplierRef.current = 1.1 + Math.pow(speedRatio, 2.9) * 64;
+    targetSpeedRef.current = speed;
+
+    const nextMultiplier = 1.2 + Math.pow(speedRatio, 2.25) * 42;
+    velocityMultiplierRef.current = nextMultiplier;
+
+    if (speed < LIGHTNING_START_SPEED) {
+      setOverlay((current) =>
+        current.lightningBolts.length || current.acceleratorArcs.length
+          ? {
+              ...current,
+              lightningBolts: [],
+              acceleratorArcs: [],
+            }
+          : current
+      );
+    } else if (speed < ACCELERATOR_START_SPEED) {
+      setOverlay((current) =>
+        current.acceleratorArcs.length
+          ? {
+              ...current,
+              acceleratorArcs: [],
+            }
+          : current
+      );
+    }
   }, [speed, speedRatio]);
 
   useEffect(() => {
@@ -774,13 +817,27 @@ export function SkillsGlobe() {
       }
 
       const dt = lastTimeRef.current
-        ? Math.min((time - lastTimeRef.current) / 16.6667, 2)
+        ? Math.min((time - lastTimeRef.current) / 16.6667, 1.55)
         : 1;
+
       lastTimeRef.current = time;
 
-      const currentSpeed = overlaySpeedRef.current;
+      smoothSpeedRef.current +=
+        (targetSpeedRef.current - smoothSpeedRef.current) * 0.14 * dt;
+
+      const currentSpeed = smoothSpeedRef.current;
+      const targetSpeed = targetSpeedRef.current;
+      const currentRatio = clamp(
+        (currentSpeed - MIN_SPEED) / (MAX_SPEED - MIN_SPEED),
+        0,
+        1
+      );
+
+      velocityMultiplierRef.current =
+        1.2 + Math.pow(currentRatio, 2.25) * 42;
+
       const overdrive =
-        currentSpeed > 42 ? 1 + (currentSpeed - 42) * 0.12 : 1;
+        currentSpeed > 50 ? 1 + (currentSpeed - 50) * 0.055 : 1;
 
       const targetVelocityX =
         BASE_AUTO_VELOCITY_X * velocityMultiplierRef.current * overdrive;
@@ -788,51 +845,68 @@ export function SkillsGlobe() {
         BASE_AUTO_VELOCITY_Y * velocityMultiplierRef.current * overdrive;
 
       if (!pointerActiveRef.current) {
-        velocityXRef.current += (targetVelocityX - velocityXRef.current) * 0.048 * dt;
-        velocityYRef.current += (targetVelocityY - velocityYRef.current) * 0.048 * dt;
+        velocityXRef.current +=
+          (targetVelocityX - velocityXRef.current) * 0.085 * dt;
+        velocityYRef.current +=
+          (targetVelocityY - velocityYRef.current) * 0.085 * dt;
       }
 
       rotationXRef.current += velocityXRef.current * dt;
       rotationYRef.current += velocityYRef.current * dt;
 
       const nextSkills = skills
-        .map((skill) => projectNode(skill, rotationXRef.current, rotationYRef.current))
+        .map((skill) =>
+          projectNode(skill, rotationXRef.current, rotationYRef.current)
+        )
         .sort((first, second) => first.depth - second.depth);
 
       const nextLattice = lattice.nodes.map((node) =>
         projectNode(node, rotationXRef.current, rotationYRef.current)
       );
 
-      const chaos = clamp((currentSpeed - 18) / 32, 0, 1);
+      const chaos = clamp((currentSpeed - LIGHTNING_START_SPEED) / 36, 0, 1);
       const rotationSeed = rotationYRef.current * 12 + rotationXRef.current * 9;
 
       frameCounterRef.current += 1;
 
+      const lightningEnabled = targetSpeed >= LIGHTNING_START_SPEED;
+      const acceleratorEnabled = targetSpeed >= ACCELERATOR_START_SPEED;
+
       const shouldRefreshLightning =
-        currentSpeed > 28
-          ? true
-          : currentSpeed > 20
-          ? frameCounterRef.current % 2 === 0
-          : frameCounterRef.current % 3 === 0;
+        lightningEnabled &&
+        (currentSpeed > 48
+          ? frameCounterRef.current % 3 === 0
+          : currentSpeed > 34
+          ? frameCounterRef.current % 4 === 0
+          : frameCounterRef.current % 5 === 0);
+
+      const shouldRefreshArcs =
+        acceleratorEnabled && frameCounterRef.current % 3 === 0;
 
       setOverlay((prev) => ({
         projectedSkills: nextSkills,
         projectedLattice: nextLattice,
-        lightningBolts: shouldRefreshLightning
-          ? buildLightningBolts(nextLattice, currentSpeed, chaos, rotationSeed)
-          : prev.lightningBolts,
-        acceleratorArcs: buildAcceleratorArcs(currentSpeed, rotationSeed),
+        lightningBolts: lightningEnabled
+          ? shouldRefreshLightning
+            ? buildLightningBolts(nextLattice, currentSpeed, chaos, rotationSeed)
+            : prev.lightningBolts
+          : [],
+        acceleratorArcs: acceleratorEnabled
+          ? shouldRefreshArcs
+            ? buildAcceleratorArcs(currentSpeed, rotationSeed)
+            : prev.acceleratorArcs
+          : [],
         reactorPhase: rotationSeed,
       }));
 
       const damping =
-        currentSpeed > 44
-          ? 0.996
-          : currentSpeed > 34
-          ? 0.993
-          : currentSpeed > 22
-          ? 0.99
-          : 0.987;
+        currentSpeed > 50
+          ? 0.997
+          : currentSpeed > 38
+          ? 0.995
+          : currentSpeed > 24
+          ? 0.992
+          : 0.988;
 
       velocityXRef.current *= Math.pow(damping, dt);
       velocityYRef.current *= Math.pow(damping, dt);
@@ -873,11 +947,11 @@ export function SkillsGlobe() {
       pointerXRef.current = event.clientX;
       pointerYRef.current = event.clientY;
 
-      velocityYRef.current = deltaX * 0.00062;
-      velocityXRef.current = -deltaY * 0.00062;
+      velocityYRef.current = deltaX * 0.00074;
+      velocityXRef.current = -deltaY * 0.00074;
 
-      rotationYRef.current += deltaX * 0.0044;
-      rotationXRef.current -= deltaY * 0.0044;
+      rotationYRef.current += deltaX * 0.0048;
+      rotationXRef.current -= deltaY * 0.0048;
     };
 
     const handlePointerUp = (event: PointerEvent) => {
@@ -957,7 +1031,11 @@ export function SkillsGlobe() {
 
           <div className="globe-scene-shell">
             <div className="globe-scene">
-              <GlobeOverlay overlay={overlay} edges={lattice.edges} speed={speed} />
+              <GlobeOverlay
+                overlay={overlay}
+                edges={lattice.edges}
+                speed={speed}
+              />
             </div>
           </div>
 
@@ -965,24 +1043,37 @@ export function SkillsGlobe() {
         </div>
       </div>
 
-      <div className="mx-auto mt-4 max-w-[30rem] px-1 sm:mt-8">
-        <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-[0.28em] text-white/42">
-          <span>Speed</span>
-          <span className="text-white/65">{speed.toFixed(0)}</span>
-        </div>
+      <div className="mx-auto mt-6 max-w-[34rem] px-2 sm:mt-8">
+        <div className="rounded-[1.35rem] border border-white/[0.12] bg-[rgba(255,255,255,0.045)] px-5 py-4 shadow-[0_18px_45px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-white/58">
+                Rotation Speed
+              </p>
+              <p className="mt-1 text-xs text-white/34">
+                Push it harder to activate accelerator mode.
+              </p>
+            </div>
 
-        <input
-          type="range"
-          min={MIN_SPEED}
-          max={MAX_SPEED}
-          step={1}
-          value={speed}
-          onChange={(event) => setSpeed(Number(event.target.value))}
-          className="h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-white"
-        />
+            <span className="rounded-full border border-white/[0.14] bg-white/[0.08] px-3 py-1 text-[0.76rem] font-semibold tracking-[0.08em] text-white/82">
+              {speed.toFixed(0)}
+            </span>
+          </div>
 
-        <div className="mt-3 text-center text-xs text-white/38">
-          Push it to the limit and the globe enters particle-accelerator mode.
+          <input
+            type="range"
+            min={MIN_SPEED}
+            max={MAX_SPEED}
+            step={1}
+            value={speed}
+            onChange={(event) => setSpeed(Number(event.target.value))}
+            className="skills-speed-slider w-full"
+          />
+
+          <div className="mt-3 flex justify-between text-[0.62rem] uppercase tracking-[0.22em] text-white/34">
+            <span>Slow</span>
+            <span>Accelerator</span>
+          </div>
         </div>
       </div>
 
@@ -1022,6 +1113,46 @@ export function SkillsGlobe() {
           to {
             transform: translateX(-50%);
           }
+        }
+
+        .skills-speed-slider {
+          appearance: none;
+          height: 0.6rem;
+          border-radius: 999px;
+          outline: none;
+          cursor: pointer;
+          background: linear-gradient(
+            90deg,
+            rgba(145, 198, 255, 0.96),
+            rgba(182, 167, 255, 0.92),
+            rgba(255, 255, 255, 0.5)
+          );
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.22),
+            0 0 28px rgba(145, 198, 255, 0.2);
+        }
+
+        .skills-speed-slider::-webkit-slider-thumb {
+          appearance: none;
+          height: 1.45rem;
+          width: 1.45rem;
+          border-radius: 999px;
+          border: 2px solid rgba(255, 255, 255, 0.96);
+          background: #ffffff;
+          box-shadow:
+            0 0 0 6px rgba(145, 198, 255, 0.16),
+            0 12px 30px rgba(0, 0, 0, 0.42);
+        }
+
+        .skills-speed-slider::-moz-range-thumb {
+          height: 1.45rem;
+          width: 1.45rem;
+          border-radius: 999px;
+          border: 2px solid rgba(255, 255, 255, 0.96);
+          background: #ffffff;
+          box-shadow:
+            0 0 0 6px rgba(145, 198, 255, 0.16),
+            0 12px 30px rgba(0, 0, 0, 0.42);
         }
 
         .globe-stage-frame {

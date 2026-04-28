@@ -5,6 +5,7 @@ import { BackgroundEnvironment } from "./background-environment";
 import { IntroHero } from "./intro-hero";
 import { ContactSection } from "./contact-section";
 import { ExperienceFlow } from "./experience-flow";
+import { ProjectMediaGallery } from "./project-media-gallery";
 import { SiteNavbar } from "./site-navbar";
 import { SkillsGlobe } from "./skills-globe";
 
@@ -12,7 +13,8 @@ const sections = [
   { id: "hero", label: "Intro", index: "01" },
   { id: "skills", label: "Skills", index: "02" },
   { id: "projects", label: "Experience", index: "03" },
-  { id: "contact", label: "Contact", index: "04" },
+  { id: "media", label: "Media", index: "04" },
+  { id: "contact", label: "Contact", index: "05" },
 ] as const;
 
 type SectionId = (typeof sections)[number]["id"];
@@ -151,6 +153,7 @@ export function PortfolioPage() {
         <IntroHero />
         <SkillsSection />
         <ProjectsSection />
+        <ProjectMediaGallery />
         <ContactSection />
       </main>
     </div>

@@ -1,6 +1,13 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  memo,
+  type MouseEvent as ReactMouseEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   Background,
   BaseEdge,
@@ -204,6 +211,7 @@ const seedEdges: FlowEdge[] = [
 
 function getEdgeMeta(edge: FlowEdge): EdgeMeta {
   const raw = edge.data as Partial<EdgeMeta> | undefined;
+
   return {
     kind: raw?.kind === "secondary" ? "secondary" : "primary",
     color: raw?.color ?? EDGE_PRIMARY,
@@ -221,6 +229,10 @@ function cloneNodes(): FlowNode[] {
 function cloneEdges(): FlowEdge[] {
   return seedEdges.map((edge) => ({
     ...edge,
+    markerEnd:
+      typeof edge.markerEnd === "object" && edge.markerEnd !== null
+        ? { ...edge.markerEnd }
+        : edge.markerEnd,
     data: edge.data ? { ...(edge.data as object) } : undefined,
   }));
 }
@@ -237,9 +249,9 @@ function SourceHandle({ id = "source" }: { id?: string }) {
         width: 30,
         height: 30,
         borderRadius: 999,
-        border: "1px solid rgba(255,255,255,0.14)",
-        background: "#2a2f3b",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
+        border: "1px solid rgba(255,255,255,0.16)",
+        background: "#252b38",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
         bottom: -15,
       }}
     >
@@ -262,9 +274,9 @@ function TargetHandle() {
         width: 30,
         height: 30,
         borderRadius: 999,
-        border: "1px solid rgba(255,255,255,0.14)",
-        background: "#314d3f",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
+        border: "1px solid rgba(255,255,255,0.16)",
+        background: "#243246",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
         top: -15,
       }}
     >
@@ -277,9 +289,23 @@ function TargetHandle() {
 
 const HUB_HANDLE_LEFTS = [8, 20, 32, 44, 56, 68, 80, 92] as const;
 
-const HubNode = memo(function HubNode() {
+const HubNode = memo(function HubNode(props: NodeProps<FlowNode>) {
+  const data = props.data as HubNodeData;
+  const selected = Boolean(props.selected);
+
   return (
-    <div className="relative min-w-[15.5rem] rounded-[1.45rem] border border-white/12 bg-[linear-gradient(180deg,rgba(19,24,36,0.98),rgba(10,12,19,0.98))] px-5 py-4 text-center shadow-[0_20px_58px_rgba(0,0,0,0.34),0_0_54px_rgba(129,157,255,0.14)]">
+    <div
+      className={`relative min-w-[15.5rem] rounded-[1.45rem] border px-5 py-4 text-center transition duration-200 ${
+        selected
+          ? "border-white/24 bg-[linear-gradient(180deg,rgba(25,31,48,0.99),rgba(11,13,21,0.99))]"
+          : "border-white/12 bg-[linear-gradient(180deg,rgba(19,24,36,0.98),rgba(10,12,19,0.98))]"
+      }`}
+      style={{
+        boxShadow: selected
+          ? "0 22px 64px rgba(0,0,0,0.4), 0 0 60px rgba(145,198,255,0.18)"
+          : "0 20px 58px rgba(0,0,0,0.34), 0 0 54px rgba(129,157,255,0.14)",
+      }}
+    >
       {HUB_HANDLE_LEFTS.map((left, index) => (
         <Handle
           key={`hub-source-${index}`}
@@ -292,24 +318,25 @@ const HubNode = memo(function HubNode() {
             width: 18,
             height: 18,
             borderRadius: 999,
-            border: "1px solid rgba(255,255,255,0.12)",
+            border: "1px solid rgba(255,255,255,0.14)",
             background: "#2a2f3b",
-            boxShadow: "0 6px 18px rgba(0,0,0,0.22)",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.24)",
             bottom: -9,
             left: `${left}%`,
             transform: "translateX(-50%)",
           }}
         />
       ))}
+
       <p className="text-[0.64rem] uppercase tracking-[0.28em] text-white/38">
         Experience Hub
       </p>
+
       <h3 className="mt-2 text-[1.15rem] font-semibold tracking-[0.18em] text-white/94">
-        EMANUEL LAIOLO
+        {data.label}
       </h3>
-      <p className="mt-2 text-sm text-white/48">
-        Projects, roles, foundations, and growth paths
-      </p>
+
+      <p className="mt-2 text-sm text-white/48">{data.subtitle}</p>
     </div>
   );
 });
@@ -318,7 +345,7 @@ const ExperienceNodeCard = memo(function ExperienceNodeCard(
   props: NodeProps<FlowNode>
 ) {
   const data = props.data as ExperienceNodeData;
-  const { selected } = props;
+  const selected = Boolean(props.selected);
 
   return (
     <div
@@ -330,7 +357,7 @@ const ExperienceNodeCard = memo(function ExperienceNodeCard(
       style={{
         boxShadow: selected
           ? `0 0 0 1px rgba(255,255,255,0.06), 0 0 28px ${data.accent}24, 0 18px 52px rgba(0,0,0,0.38)`
-          : `0 14px 38px rgba(0,0,0,0.28)`,
+          : "0 14px 38px rgba(0,0,0,0.28)",
       }}
     >
       <TargetHandle />
@@ -341,10 +368,12 @@ const ExperienceNodeCard = memo(function ExperienceNodeCard(
           <p className="text-[0.62rem] uppercase tracking-[0.22em] text-white/34">
             {data.stage}
           </p>
+
           <h3 className="mt-1 text-[1.02rem] font-semibold tracking-[-0.03em] text-white/94">
             {data.title}
           </h3>
         </div>
+
         <span
           className="mt-0.5 inline-block h-2.5 w-2.5 rounded-full"
           style={{ backgroundColor: data.accent }}
@@ -354,6 +383,7 @@ const ExperienceNodeCard = memo(function ExperienceNodeCard(
       <p className="mt-3 text-[0.72rem] uppercase tracking-[0.18em] text-white/36">
         {data.subtitle}
       </p>
+
       <p className="mt-1 text-sm text-white/42">{data.period}</p>
 
       {selected ? (
@@ -361,7 +391,9 @@ const ExperienceNodeCard = memo(function ExperienceNodeCard(
           <p className="text-[0.72rem] uppercase tracking-[0.18em] text-white/34">
             {data.role} · {data.location}
           </p>
+
           <p className="text-sm leading-6 text-white/60">{data.summary}</p>
+
           <div className="flex flex-wrap gap-2">
             {data.stack.map((item) => (
               <span
@@ -379,7 +411,14 @@ const ExperienceNodeCard = memo(function ExperienceNodeCard(
 });
 
 const WorkflowEdge = memo(function WorkflowEdge(props: EdgeProps<FlowEdge>) {
-  const meta = getEdgeMeta(props as unknown as FlowEdge);
+  const raw = props.data as Partial<EdgeMeta> | undefined;
+  const meta: EdgeMeta = {
+    kind: raw?.kind === "secondary" ? "secondary" : "primary",
+    color: raw?.color ?? EDGE_PRIMARY,
+  };
+
+  const selected = Boolean(props.selected);
+
   const [path] = getSmoothStepPath({
     sourceX: props.sourceX,
     sourceY: props.sourceY,
@@ -396,10 +435,11 @@ const WorkflowEdge = memo(function WorkflowEdge(props: EdgeProps<FlowEdge>) {
       path={path}
       markerEnd={props.markerEnd}
       style={{
-        stroke: meta.color,
-        strokeWidth: meta.kind === "primary" ? 2.1 : 1.25,
+        stroke: selected ? "rgba(255,255,255,0.98)" : meta.color,
+        strokeWidth: selected ? 3 : meta.kind === "primary" ? 2.1 : 1.25,
         strokeDasharray: meta.kind === "primary" ? "3 8" : "none",
-        opacity: meta.kind === "primary" ? 0.95 : 0.68,
+        opacity: selected ? 1 : meta.kind === "primary" ? 0.95 : 0.68,
+        filter: selected ? "drop-shadow(0 0 8px rgba(255,255,255,0.32))" : "",
       }}
     />
   );
@@ -417,15 +457,15 @@ const edgeTypes: EdgeTypes = {
 function ExperienceFlowInner() {
   const [selectedId, setSelectedId] = useState<string | null>(INITIAL_SELECTED);
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
-  const [showSecondaryRelationships, setShowSecondaryRelationships] =
-    useState(false);
   const [isEditMode, setIsEditMode] = useState(true);
   const [isCreatorOpen, setIsCreatorOpen] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [newNodeName, setNewNodeName] = useState("");
   const [newNodeStage, setNewNodeStage] = useState("New");
-  const [nodes, setNodes, onNodesChange] = useNodesState(cloneNodes());
-  const [edges, setEdges, onEdgesChange] = useEdgesState(cloneEdges());
+  const [nodes, setNodes, onNodesChange] =
+    useNodesState<FlowNode>(cloneNodes());
+  const [edges, setEdges, onEdgesChange] =
+    useEdgesState<FlowEdge>(cloneEdges());
 
   useEffect(() => {
     setNodes((currentNodes) =>
@@ -447,10 +487,19 @@ function ExperienceFlowInner() {
     [edges, selectedEdgeId]
   );
 
-  const visibleEdges = useMemo(() => {
-    if (showSecondaryRelationships) return edges;
-    return edges.filter((edge) => getEdgeMeta(edge).kind !== "secondary");
-  }, [edges, showSecondaryRelationships]);
+  const flowEdges = useMemo<FlowEdge[]>(
+    () =>
+      edges.map((edge) => {
+        const meta = getEdgeMeta(edge);
+
+        return {
+          ...edge,
+          hidden: meta.kind === "secondary",
+          selected: edge.id === selectedEdgeId,
+        };
+      }),
+    [edges, selectedEdgeId]
+  );
 
   const onNodeClick = useCallback<NodeMouseHandler<FlowNode>>((_, node) => {
     setSelectedId(node.id);
@@ -460,18 +509,23 @@ function ExperienceFlowInner() {
   const onNodeDoubleClick = useCallback<NodeMouseHandler<FlowNode>>(
     (_, node) => {
       if (!isEditMode) return;
+
       setSelectedId(node.id);
       setSelectedEdgeId(null);
       setIsEditorOpen(true);
+      setIsCreatorOpen(false);
     },
     [isEditMode]
   );
 
   const onEdgeClick = useCallback(
-    (_: React.MouseEvent, edge: FlowEdge) => {
+    (_event: ReactMouseEvent, edge: FlowEdge) => {
       if (!isEditMode) return;
+
       setSelectedEdgeId(edge.id);
       setSelectedId(null);
+      setIsEditorOpen(false);
+      setIsCreatorOpen(false);
     },
     [isEditMode]
   );
@@ -479,12 +533,17 @@ function ExperienceFlowInner() {
   const isValidConnection = useCallback<IsValidConnection>(
     (connection) => {
       const { source, target, sourceHandle, targetHandle } = connection;
+
       if (!source || !target) return false;
       if (source === target) return false;
+
       if (sourceHandle && source !== "emanuel" && sourceHandle !== "source") {
         return false;
       }
-      if (targetHandle && targetHandle !== "target") return false;
+
+      if (targetHandle && targetHandle !== "target") {
+        return false;
+      }
 
       return !edges.some(
         (edge) =>
@@ -525,6 +584,8 @@ function ExperienceFlowInner() {
       };
 
       setEdges((currentEdges) => addEdge(nextEdge, currentEdges));
+      setSelectedEdgeId(nextEdge.id);
+      setSelectedId(null);
     },
     [isEditMode, isValidConnection, setEdges]
   );
@@ -532,6 +593,7 @@ function ExperienceFlowInner() {
   const updateSelectedNode = useCallback(
     (patch: Partial<HubNodeData & ExperienceNodeData>) => {
       if (!selectedNode) return;
+
       setNodes((currentNodes) =>
         currentNodes.map((node) =>
           node.id === selectedNode.id
@@ -546,10 +608,15 @@ function ExperienceFlowInner() {
   const createNode = useCallback(() => {
     const id = `card-${Date.now()}`;
     const title = newNodeName.trim() || "New Node";
+    const offset = nodes.length % 6;
+
     const newNode: FlowNode = {
       id,
       type: "experience",
-      position: { x: 420, y: 360 },
+      position: {
+        x: 330 + offset * 44,
+        y: 350 + offset * 36,
+      },
       data: {
         title,
         subtitle: "Custom Node",
@@ -559,52 +626,63 @@ function ExperienceFlowInner() {
         summary: "Describe the project, role, or milestone here.",
         stack: ["Tag 1", "Tag 2"],
         accent: "#8fb8ff",
-        stage: newNodeStage,
+        stage: newNodeStage.trim() || "New",
       },
     };
+
     setNodes((current) => [...current, newNode]);
     setSelectedId(id);
     setSelectedEdgeId(null);
     setNewNodeName("");
     setNewNodeStage("New");
     setIsEditorOpen(true);
-  }, [newNodeName, newNodeStage, setNodes]);
+    setIsCreatorOpen(false);
+  }, [newNodeName, newNodeStage, nodes.length, setNodes]);
 
   const duplicateSelected = useCallback(() => {
     if (!selectedNode || selectedNode.type !== "experience") return;
+
     const data = selectedNode.data as ExperienceNodeData;
     const id = `duplicate-${Date.now()}`;
+
     const duplicate: FlowNode = {
       ...selectedNode,
       id,
+      selected: false,
       position: {
         x: selectedNode.position.x + 48,
         y: selectedNode.position.y + 48,
       },
       data: { ...data, title: `${data.title} Copy` },
     };
+
     setNodes((current) => [...current, duplicate]);
     setSelectedId(id);
     setSelectedEdgeId(null);
     setIsEditorOpen(true);
+    setIsCreatorOpen(false);
   }, [selectedNode, setNodes]);
 
   const deleteSelectedNode = useCallback(() => {
     if (!selectedNode) return;
+    if (selectedNode.id === "emanuel") return;
+
     const nodeId = selectedNode.id;
+
     setNodes((current) => current.filter((node) => node.id !== nodeId));
     setEdges((current) =>
       current.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
     );
+
     setSelectedId(null);
+    setSelectedEdgeId(null);
     setIsEditorOpen(false);
   }, [selectedNode, setEdges, setNodes]);
 
   const deleteSelectedEdge = useCallback(() => {
     if (!selectedEdgeId) return;
-    setEdges((current) =>
-      current.filter((edge) => edge.id !== selectedEdgeId)
-    );
+
+    setEdges((current) => current.filter((edge) => edge.id !== selectedEdgeId));
     setSelectedEdgeId(null);
   }, [selectedEdgeId, setEdges]);
 
@@ -613,8 +691,8 @@ function ExperienceFlowInner() {
     setEdges(cloneEdges());
     setSelectedId(INITIAL_SELECTED);
     setSelectedEdgeId(null);
-    setShowSecondaryRelationships(false);
     setIsEditorOpen(false);
+    setIsCreatorOpen(false);
     setIsEditMode(true);
   }, [setEdges, setNodes]);
 
@@ -624,9 +702,7 @@ function ExperienceFlowInner() {
   );
 
   const selectedHub =
-    selectedNode?.type === "hub"
-      ? (selectedNode.data as HubNodeData)
-      : null;
+    selectedNode?.type === "hub" ? (selectedNode.data as HubNodeData) : null;
 
   const selectedCard =
     selectedNode?.type === "experience"
@@ -652,39 +728,67 @@ function ExperienceFlowInner() {
       `}</style>
 
       <div className="space-y-10 lg:space-y-14">
-        <div className="mx-auto max-w-4xl space-y-4 px-1 text-center">
-          <p className="text-[0.72rem] font-medium uppercase tracking-[0.34em] text-[var(--foreground-subtle)]">
-            Experience Flow
-          </p>
-          <h2 className="text-[2rem] font-semibold tracking-[-0.045em] text-[var(--foreground)] sm:text-4xl lg:text-[2.9rem]">
-            A living map of my work, built by me.
-          </h2>
-          <p className="mx-auto max-w-3xl text-[0.98rem] leading-7 text-[var(--foreground-muted)] sm:text-lg sm:leading-8">
-            I built this interactive canvas to show how my projects, skills, and
-            technical foundations connect over time. You can move nodes, inspect
-            links, and explore the structure freely — while the original
-            composition stays intentional and curated.
-          </p>
-        </div>
+        <div className="mx-auto max-w-6xl space-y-6 px-1 text-center">
+          <div className="space-y-4">
+            <p className="text-[0.72rem] font-medium uppercase tracking-[0.34em] text-[var(--foreground-subtle)]">
+              Interactive Experience Flow
+            </p>
 
-        <div className="overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-[#0b0d12] shadow-[0_18px_60px_rgba(0,0,0,0.28)]">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.06] px-5 py-4 sm:px-6">
-            <div>
-              <p className="text-[0.64rem] uppercase tracking-[0.28em] text-white/34">
-                React Flow Canvas
+            <h2 className="mx-auto max-w-5xl text-[2rem] font-semibold tracking-[-0.045em] text-[var(--foreground)] sm:text-4xl lg:text-[2.9rem]">
+              A visual map of how my projects, skills, and technical foundations
+              connect.
+            </h2>
+
+            <p className="mx-auto max-w-3xl text-[0.98rem] leading-7 text-[var(--foreground-muted)] sm:text-lg sm:leading-8">
+              This is an interactive flowchart built to present my work as a
+              connected system, not a static timeline. Explore the nodes, inspect
+              relationships, move elements around, or create your own connections
+              to understand how each experience contributes to the bigger
+              picture.
+            </p>
+          </div>
+
+          <div className="mx-auto grid max-w-5xl gap-3 text-left sm:grid-cols-3">
+            <div className="rounded-[1.25rem] border border-white/[0.08] bg-white/[0.025] px-4 py-4 backdrop-blur-md">
+              <p className="text-[0.64rem] font-medium uppercase tracking-[0.24em] text-white/36">
+                Explore
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/62">
+                Click any node to reveal the role, context, stack, and project
+                details.
               </p>
             </div>
 
-            <div className="flex items-center gap-2" />
-          </div>
+            <div className="rounded-[1.25rem] border border-white/[0.08] bg-white/[0.025] px-4 py-4 backdrop-blur-md">
+              <p className="text-[0.64rem] font-medium uppercase tracking-[0.24em] text-white/36">
+                Interact
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/62">
+                Drag nodes, zoom, pan, and inspect how different experiences are
+                linked.
+              </p>
+            </div>
 
+            <div className="rounded-[1.25rem] border border-white/[0.08] bg-white/[0.025] px-4 py-4 backdrop-blur-md">
+              <p className="text-[0.64rem] font-medium uppercase tracking-[0.24em] text-white/36">
+                Build
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/62">
+                Add custom nodes and connect them to test new paths inside the
+                canvas.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="overflow-hidden rounded-[1.75rem] border border-white/[0.08] bg-[#0b0d12] shadow-[0_18px_60px_rgba(0,0,0,0.28)]">
           <div className="experience-scroll-shell">
             <div className="experience-scroll-track">
               <div className="experience-stage relative w-full overflow-hidden bg-[#111318]">
                 <div className="experience-scene absolute inset-0">
                   <ReactFlow<FlowNode, FlowEdge>
                     nodes={nodes}
-                    edges={visibleEdges}
+                    edges={flowEdges}
                     nodeTypes={nodeTypes}
                     edgeTypes={edgeTypes}
                     onNodesChange={onNodesChange}
@@ -725,6 +829,7 @@ function ExperienceFlowInner() {
                     proOptions={{ hideAttribution: true }}
                   >
                     <Background gap={20} size={1} />
+
                     <MiniMap
                       zoomable
                       pannable
@@ -733,6 +838,7 @@ function ExperienceFlowInner() {
                         border: "1px solid rgba(255,255,255,0.08)",
                       }}
                     />
+
                     <Controls
                       style={{
                         background: "#0f1117",
@@ -740,11 +846,19 @@ function ExperienceFlowInner() {
                       }}
                       showInteractive={false}
                     />
+
                     <Panel position="top-left">
-                      <div className="hidden rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-3 py-2.5 text-xs leading-5 text-white/62 backdrop-blur-xl sm:block sm:w-[min(100%,26rem)] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
-                        Select a node to reveal its information. You can also
-                        move nodes, create connections, duplicate items, or
-                        reset the canvas from the panel on the right.
+                      <div className="hidden rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.88)] px-3 py-2.5 text-xs leading-5 text-white/62 backdrop-blur-xl sm:block sm:w-[min(100%,28rem)] sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
+                        This canvas is interactive. Select a node to inspect the
+                        experience, drag nodes to reorganize the map, or use the
+                        editor controls to add, duplicate, connect, and reset
+                        items.
+                      </div>
+                    </Panel>
+
+                    <Panel position="bottom-left">
+                      <div className="hidden rounded-xl border border-white/[0.08] bg-[rgba(15,17,23,0.82)] px-3 py-2 text-[0.64rem] uppercase tracking-[0.18em] text-white/42 backdrop-blur-xl sm:block">
+                        Edit mode enabled
                       </div>
                     </Panel>
 
@@ -762,6 +876,7 @@ function ExperienceFlowInner() {
                             >
                               Add Node
                             </button>
+
                             <button
                               type="button"
                               onClick={() =>
@@ -772,6 +887,7 @@ function ExperienceFlowInner() {
                             >
                               Edit Selected
                             </button>
+
                             <button
                               type="button"
                               onClick={duplicateSelected}
@@ -780,14 +896,18 @@ function ExperienceFlowInner() {
                             >
                               Duplicate
                             </button>
+
                             <button
                               type="button"
                               onClick={deleteSelectedNode}
-                              disabled={!selectedNode}
+                              disabled={
+                                !selectedNode || selectedNode.id === "emanuel"
+                              }
                               className="rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[0.68rem] uppercase tracking-[0.22em] text-white/46 transition hover:text-white/78 disabled:cursor-not-allowed disabled:opacity-35"
                             >
                               Delete Node
                             </button>
+
                             <button
                               type="button"
                               onClick={deleteSelectedEdge}
@@ -796,6 +916,7 @@ function ExperienceFlowInner() {
                             >
                               Delete Edge
                             </button>
+
                             <button
                               type="button"
                               onClick={resetGraph}
@@ -812,17 +933,20 @@ function ExperienceFlowInner() {
                               <p className="text-[0.66rem] uppercase tracking-[0.22em] text-white/36">
                                 Node Creator
                               </p>
+
                               <div className="mt-4 space-y-3">
                                 <Field
                                   label="Name"
                                   value={newNodeName}
                                   onChange={setNewNodeName}
                                 />
+
                                 <Field
                                   label="Stage"
                                   value={newNodeStage}
                                   onChange={setNewNodeStage}
                                 />
+
                                 <div className="flex gap-2">
                                   <button
                                     type="button"
@@ -831,6 +955,7 @@ function ExperienceFlowInner() {
                                   >
                                     Add
                                   </button>
+
                                   <button
                                     type="button"
                                     onClick={() => setIsCreatorOpen(false)}
@@ -856,11 +981,13 @@ function ExperienceFlowInner() {
                                   ? "Hub Editor"
                                   : "Card Editor"}
                               </p>
+
                               <p className="mt-1 text-sm text-white/58">
                                 Compact contextual editing, without taking over
                                 the workspace.
                               </p>
                             </div>
+
                             <button
                               type="button"
                               onClick={() => setIsEditorOpen(false)}
@@ -879,6 +1006,7 @@ function ExperienceFlowInner() {
                                   updateSelectedNode({ label: value })
                                 }
                               />
+
                               <Field
                                 label="Subtitle"
                                 value={selectedHub.subtitle}
@@ -900,6 +1028,7 @@ function ExperienceFlowInner() {
                                   updateSelectedNode({ title: value })
                                 }
                               />
+
                               <Field
                                 label="Subtitle"
                                 value={selectedCard.subtitle}
@@ -907,6 +1036,7 @@ function ExperienceFlowInner() {
                                   updateSelectedNode({ subtitle: value })
                                 }
                               />
+
                               <Field
                                 label="Period"
                                 value={selectedCard.period}
@@ -914,6 +1044,7 @@ function ExperienceFlowInner() {
                                   updateSelectedNode({ period: value })
                                 }
                               />
+
                               <Field
                                 label="Role"
                                 value={selectedCard.role}
@@ -921,6 +1052,7 @@ function ExperienceFlowInner() {
                                   updateSelectedNode({ role: value })
                                 }
                               />
+
                               <Field
                                 label="Location"
                                 value={selectedCard.location}
@@ -928,6 +1060,7 @@ function ExperienceFlowInner() {
                                   updateSelectedNode({ location: value })
                                 }
                               />
+
                               <Field
                                 label="Stage"
                                 value={selectedCard.stage}
@@ -935,6 +1068,7 @@ function ExperienceFlowInner() {
                                   updateSelectedNode({ stage: value })
                                 }
                               />
+
                               <Field
                                 label="Accent"
                                 value={selectedCard.accent}
@@ -942,6 +1076,7 @@ function ExperienceFlowInner() {
                                   updateSelectedNode({ accent: value })
                                 }
                               />
+
                               <Field
                                 label="Summary"
                                 value={selectedCard.summary}
@@ -950,6 +1085,7 @@ function ExperienceFlowInner() {
                                 }
                                 multiline
                               />
+
                               <Field
                                 label="Stack tags"
                                 value={selectedCard.stack.join(", ")}
@@ -1056,6 +1192,7 @@ function Field({
       <span className="text-[0.66rem] uppercase tracking-[0.22em] text-white/36">
         {label}
       </span>
+
       {multiline ? (
         <textarea
           value={value}
