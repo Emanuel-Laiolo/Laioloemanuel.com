@@ -247,6 +247,38 @@ const rawProjects: MediaProject[] = [
     ],
   },
   {
+    id: "rockedebaires",
+    title: "Rocke de Baires",
+    subtitle: "Poker coaching website",
+    description:
+      "A premium brand and conversion website for a poker coach, designed to present free content, paid offers, testimonials, and clear contact paths in one focused experience.",
+    accent: "#d8b96c",
+    items: [
+      {
+        id: "rockedebaires-video",
+        type: "video",
+        title: "Website walkthrough",
+        caption:
+          "Recorded walkthrough showing the structure, visual direction, and conversion flow of the Rocke de Baires website.",
+        src: "/project-media/rockedebaires/2026-04-29 17-41-35.mp4",
+        poster: "/project-media/rockedebaires/Screenshot 2026-04-29 174219.png",
+        alt: "Rocke de Baires website walkthrough",
+        size: "2560-1600",
+        available: true,
+      },
+      {
+        id: "rockedebaires-image",
+        type: "image",
+        title: "Visual direction",
+        caption:
+          "Static capture of the site’s premium brand presentation, layout system, and content hierarchy.",
+        src: "/project-media/rockedebaires/Screenshot 2026-04-29 174219.png",
+        alt: "Rocke de Baires website visual capture",
+        size: "2537-1599",
+      },
+    ],
+  },
+  {
     id: "range-builder",
     title: "Range Builder",
     subtitle: "Poker tools for poker players",

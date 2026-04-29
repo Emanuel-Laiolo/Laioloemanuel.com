@@ -445,7 +445,7 @@ export function IntroHero() {
                   ref={statementRef}
                   className="max-w-[40rem] text-[1.12rem] leading-[1.55] tracking-[-0.03em] text-[var(--foreground)]/94 sm:text-[1.72rem] sm:leading-10"
                 >
-                  As a child I built with Lego. Today I build with code.
+                  Ever since I was a kid, I was obsessed with building. Back then, it was Legos; today, it’s code
                 </p>
 
                 <p
